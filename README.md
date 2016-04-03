@@ -1,5 +1,1 @@
-FINAL PROJECT DAW
-#################
-MAXFILM
-#################
-PYTHON - DJANGO
+# Final Project DAW
