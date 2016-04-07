@@ -2,28 +2,28 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
-# from django.contrib.auth.models import AbstractBaseUser
+# from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser
 
 
-class Usuarios(models.Model):
+class Usuarios(AbstractBaseUser):
     """Class Usuarios"""
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL)
-    # nombre_usuario = models.CharField(max_length=30, unique=True)
-    # nombre = models.CharField(max_length=40)
-    # apellidos = models.CharField(max_length=60)
+    # usuario = models.OneToOneField(settings.AUTH_USER_MODEL)
+    nombre_usuario = models.CharField(max_length=30, unique=True)
+    nombre = models.CharField(max_length=40)
+    apellidos = models.CharField(max_length=60)
     fecha_nacimiento = models.DateField(blank=False, null=False)
-    # email = models.EmailField()
+    email = models.EmailField()
     avatar = models.ImageField(upload_to='imgPerfil', blank=False, null=False)
 
-    # USERNAME_FIELD = 'nombre_usuario'
+    USERNAME_FIELD = 'nombre_usuario'
     # REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.usuario
+        return self.nombre_usuario
 
     def __unicode__(self):
-        return self.usuario
+        return self.nombre_usuario
 
 
 class Comentarios(models.Model):
@@ -45,6 +45,8 @@ class Comentarios(models.Model):
 class Acciones(models.Model):
     """Class Acciones"""
     id_contenidoAPI = models.IntegerField()
+    titulo = models.TextField(max_length=100)
+    img_contenido = models.CharField(max_length=400)
     pendiente = models.BooleanField()
     vista = models.BooleanField()
     recomendar = models.BooleanField()
@@ -68,18 +70,6 @@ class MensajesTablon(models.Model):
 
     def __unicode__(self):
         return self.fecha
-
-
-class Amigos(models.Model):
-    """Class Amigos"""
-    usuario = models.ForeignKey(Usuarios)
-    amigo = models.ForeignKey(Usuarios, related_name="relacion_amigos")
-
-    def __str__(self):
-        return self.amigo
-
-    def __unicode__(self):
-        return self.amigo
 
 
 class Colecciones(models.Model):
