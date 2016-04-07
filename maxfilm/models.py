@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser
 
 
 class Usuarios(AbstractBaseUser):
-    """Class Usuarios"""
+    """Class Usuarios. Bajo pruebas!!"""
     # usuario = models.OneToOneField(settings.AUTH_USER_MODEL)
     nombre_usuario = models.CharField(max_length=30, unique=True)
     nombre = models.CharField(max_length=40)
