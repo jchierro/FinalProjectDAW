@@ -19,4 +19,5 @@ from . import views
 app_name = "maxfilm"
 urlpatterns = [
     url(r'^$', views.index, name="index"),
+    url(r'^(?P<id>[0-9]+)/$', views.viewItem, name="viewItem"),
 ]

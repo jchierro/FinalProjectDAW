@@ -1,10 +1,128 @@
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-{% for x in result.similar %}
-    {{ x.name }}<br>
-{% endfor %}
-</body>
-</html>
+{% extends 'maxfilm/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row page-content">
+    <div class="col-md-3">
+      <div class="sidebar">
+        <div class="card-panel">
+          <div class="row">
+            <form class="col-md-12">
+              <h5>Acceso</h5>
+              <br>
+              <div class="input-field">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="icon_prefix" type="text" class="validate">
+                <label for="icon_prefix">Usuario</label>
+              </div>
+              <div class="input-field">
+                <i class="material-icons prefix">lock</i>
+                <input id="icon_telephone" type="tel" class="validate">
+                <label for="icon_telephone">Contraseña</label>
+              </div>
+            </form>
+            <div class="text-center">
+              <button type="button" class="btn btn-info waves-effect waves-light">Acceder</button>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="collection">
+          <a href="#!" class="collection-item">Category 1</a>
+          <a href="#!" class="collection-item active">Category 1</a>
+          <a href="#!" class="collection-item">Category 1</a>
+          <a href="#!" class="collection-item">Category 1</a>
+          <a href="#!" class="collection-item">Category 1</a>
+          <a href="#!" class="collection-item">Category 1</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div id="carousel-example-generic" class="carousel slide carousel-fade">
+        <ol class="carousel-indicators">
+          <li data-target="#carousel-example-generic" data-slide-to="0" class="active">
+          </li>
+          <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+          <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+          <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+          <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+          {% for x in slider %}
+          {% if forloop.first %}
+          <div class="item active">
+            <img width="848" src="https://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
+            <div class="carousel-caption">
+              <div data-animation="animated fadeInRightBig">
+                <h3 class="h3-responsive">{{ x.title }}</h3>
+                <h5 class="h5-responsive"><i class="material-icons prefix">date_range</i> {{x.releasedate}}</h5>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="item">
+            <img width="848" src="https://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
+            <div class="carousel-caption">
+              <div data-animation="animated fadeInRightBig">
+                <h3 class="h3-responsive">{{ x.title }}</h3>
+                <h5 class="h5-responsive"><i class="material-icons prefix">date_range</i> {{x.releasedate}}</h5>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <a class="left carousel-control new-control" href="#carousel-example-generic" role="button" data-slide="prev">
+          <span class="fa fa fa-angle-left waves-effect waves-light"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control new-control" href="#carousel-example-generic" role="button" data-slide="next">
+          <span class="fa fa fa-angle-right waves-effect waves-light"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </div>
+      <h1 class="page-header">Películas</h1>
+      <div class="row text-center">
+        {% for x in result.object_list %}
+        <div class="col-md-3">
+          <div class="card hoverable" style="height:540px">
+            <div class="card-image">
+              <img height="278" src="https://image.tmdb.org/t/p/w185/{{x.poster.filename}}">
+              <span class="card-title text-center"><i class="material-icons prefix">date_range</i> <b>{{x.releasedate.year}}</b></span>
+            </div>
+            <div class="card-content">
+              <p><b>{{x.title}}</b></p>
+            </div>
+            <div class="card-action">
+              <button type="button" class="btn btn-default waves-effect waves-light">View</button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% load i18n %}
+      <ul class="pagination pag-circle" style="margin-left:10%">
+        {% if result.has_previous %}
+        <li><a href="?{{ result.previous_page_number.querystring }}" class="prev"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+        <li><a class="disabled prev"><i class="material-icons">chevron_left</i></a></li>
+        {% endif %}
+        {% for page in result.pages %}
+        {% if page %}
+        {% ifequal page result.number %}
+        <li class="active"><a>{{ page }}</a></li>
+        {% else %}
+        <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+        {% endifequal %}
+        {% endif %}
+        {% endfor %}
+        {% if result.has_next %}
+        <li><a href="?{{ result.next_page_number.querystring }}" class="next"><i class="material-icons">chevron_right</i></a></li>
+        {% else %}
+        <li><a class="disabled next"><i class="material-icons">chevron_right</i></a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

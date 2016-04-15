@@ -1,0 +1,92 @@
+{% extends 'maxfilm/base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row page-content">
+    <div class="col-md-3">
+      <div class="sidebar">
+        <div class="card-panel">
+          <div class="row text-center">
+            <img class="center-block" src="https://image.tmdb.org/t/p/w185/{{x.poster.filename}}">
+            <br>
+            <p><b>Marcar como:</b></p>
+            <a class="btn btn-info waves-effect waves-light">Recomendada</a>
+            <a class="btn btn-success waves-effect waves-light">Vista</a>
+            <a class="btn btn-warning waves-effect waves-light">Pendiente</a>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <h3 class="page-header">{{x.title}} - {{x.releasedate.year}}</h3>
+      <div class="row text-center">
+        <div class="well text-justify">{{x.overview}}</div>
+        <div class="col-md-10 col-md-offset-1">
+
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Géneros</a>
+                </h4>
+              </div>
+              <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                  {% for genre in x.genres %}
+                  {{genre.name}}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Personal de producción</a>
+                </h4>
+              </div>
+              <div id="collapse4" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="col-md-10 col-md-offset-1">
+                    <ul class="collection">
+                      {% for crew in x.crew %}
+                      <li class="collection-item avatar">
+                        <img style="height: 68px !important; width: 45px !important" src="https://image.tmdb.org/t/p/w45/{{crew.profile.filename}}" alt="" class="circle">
+                        <span class="title">{{crew.name}}</span>
+                        <p>{{crew.job}}</p>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Reparto</a>
+                </h4>
+              </div>
+              <div id="collapse5" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="col-md-10 col-md-offset-1">
+                    <ul class="collection">
+                      {% for cast in x.cast %}
+                      <li class="collection-item avatar">
+                        <img style="height: 68px !important; width: 45px !important" src="https://image.tmdb.org/t/p/w45/{{cast.profile.filename}}" alt="" class="circle">
+                        <span class="title">{{cast.name}}</span>
+                        <p>{{cast.character}}</p>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
