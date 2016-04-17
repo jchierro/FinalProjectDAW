@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'maxfilm',
     'pure_pagination',
+    'django.contrib.humanize',
 ]
 
 PAGINATION_SETTINGS = {

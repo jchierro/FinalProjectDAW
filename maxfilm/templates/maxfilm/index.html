@@ -28,12 +28,8 @@
         </div>
         <br>
         <div class="collection">
-          <a href="#!" class="collection-item">Category 1</a>
-          <a href="#!" class="collection-item active">Category 1</a>
-          <a href="#!" class="collection-item">Category 1</a>
-          <a href="#!" class="collection-item">Category 1</a>
-          <a href="#!" class="collection-item">Category 1</a>
-          <a href="#!" class="collection-item">Category 1</a>
+          <a href="#!" class="collection-item">Películas</a>
+          <a href="#!" class="collection-item active">Series</a>
         </div>
       </div>
     </div>
@@ -51,20 +47,20 @@
           {% for x in slider %}
           {% if forloop.first %}
           <div class="item active">
-            <img width="848" src="https://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
+            <img width="848" src="http://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
             <div class="carousel-caption">
               <div data-animation="animated fadeInRightBig">
-                <h3 class="h3-responsive">{{ x.title }}</h3>
+                <h3 class="h3-responsive"><a href="{%url 'maxfilm:viewItem' id=x.id%}">{{ x.title }}</a></h3>
                 <h5 class="h5-responsive"><i class="material-icons prefix">date_range</i> {{x.releasedate}}</h5>
               </div>
             </div>
           </div>
           {% else %}
           <div class="item">
-            <img width="848" src="https://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
+            <img width="848" src="http://image.tmdb.org/t/p/w780/{{x.backdrop.filename}}"/>
             <div class="carousel-caption">
               <div data-animation="animated fadeInRightBig">
-                <h3 class="h3-responsive">{{ x.title }}</h3>
+                <h3 class="h3-responsive"><a href="{%url 'maxfilm:viewItem' id=x.id%}">{{ x.title }}</a></h3>
                 <h5 class="h5-responsive"><i class="material-icons prefix">date_range</i> {{x.releasedate}}</h5>
               </div>
             </div>
@@ -87,14 +83,13 @@
         <div class="col-md-3">
           <div class="card hoverable" style="height:540px">
             <div class="card-image">
-              <img height="278" src="https://image.tmdb.org/t/p/w185/{{x.poster.filename}}">
-              <span class="card-title text-center"><i class="material-icons prefix">date_range</i> <b>{{x.releasedate.year}}</b></span>
+              <img height="278" src="http://image.tmdb.org/t/p/w185/{{x.poster.filename}}">
             </div>
-            <div class="card-content">
-              <p><b>{{x.title}}</b></p>
+            <div class="card-content" style="height:130px">
+              <p><b>{{x.title|truncatechars:40}}</b></p>
             </div>
-            <div class="card-action">
-              <button type="button" class="btn btn-default waves-effect waves-light">View</button>
+            <div class="card-action text-center">
+              <a href="{%url 'maxfilm:viewItem' id=x.id%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
             </div>
           </div>
         </div>

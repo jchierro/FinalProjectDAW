@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MaxFilm</title>
   <!-- Material Design Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <!-- Bootstrap core CSS -->
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
   <!-- Material Design Bootstrap -->
@@ -21,11 +21,11 @@
   <nav class="navbar z-depth-2 red">
     <div class="container ">
       <div class="navbar-header">
-        <a class="navbar-brand waves-effect waves-light" href="#">MaxFilm</a>
+        <a class="navbar-brand waves-effect waves-light" href="{%url 'maxfilm:index'%}">MaxFilm</a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li><a href="" class="waves-effect waves-light">Inicio <span class="sr-only">(current)</span></a></li>
+          <li><a href="{%url 'maxfilm:index'%}" class="waves-effect waves-light">Inicio <span class="sr-only">(current)</span></a></li>
           <li><a href="" class="waves-effect waves-light">Películas <span class="sr-only">(current)</span></a></li>
           <li><a href="" class="waves-effect waves-light">Series <span class="sr-only">(current)</span></a></li>
         </ul>
@@ -46,36 +46,28 @@
     <div class="container">
       <div class="row">
         <div class="col-md-3 col-md-offset-1">
-          <p class="white-text center-on-small-only">GET STARTED</p>
-          <p class="white-text center-on-small-only">Register for free and start to create amazing things.</p>
-          <a href="http://mdbootstrap.com/getting-started/" class="btn btn-danger waves-effect waves-light">Get started!</a>
+          <p class="white-text center-on-small-only">COMENZAR</p>
+          <a href="#" class="btn btn-danger waves-effect waves-light">Regístrate!</a>
         </div>
         <hr class="hidden-lg hidden-md">
         <div class="col-md-2">
-          <p class="white-text center-on-small-only">USEFUL LINKS</p>
+          <p class="white-text center-on-small-only">ENLACES</p>
           <ul>
-            <li><a href="#" data-toggle="modal" data-target="#myModal" class="grey-text text-lighten-3" href="#!">Contact us</a>
-            </li>
-            <li><a class="grey-text text-lighten-3" href="http://mdbootstrap.com/material-design-for-bootstrap/" target="_blank">About MDB</a>
-            </li>
-            <li><a class="grey-text text-lighten-3" href="http://mdbootstrap.com/forums/forum/support/" target="_blank">Support</a>
-            </li>
-            <li><a class="grey-text text-lighten-3" href="http://mdbootstrap.com/forums/forum/bugs/" target="_blank">Bug report</a>
-            </li>
+            <li><a href="#" data-toggle="modal" data-target="#myModal" class="grey-text text-lighten-3" href="#!">....</a></li>
           </ul>
         </div>
         <hr class="hidden-lg hidden-md">
         <div class="col-md-3 text-center">
-          <p class="white-text text-center"> SOCIAL MEDIA</p>
-          <a target="_blank" href="https://www.facebook.com/mdbootstrap" class="btn-floating btn-large fb-bg waves-effect waves-light"><i class="fa fa-facebook"> </i></a>
-          <a target="_blank" href="https://twitter.com/MDBootstrap" class="btn-floating btn-large tw-bg waves-effect waves-light"><i class="fa fa-twitter"> </i></a>
-          <a target="_blank" href="https://plus.google.com/u/0/b/107863090883699620484/107863090883699620484/posts" class="btn-floating btn-large gplus-bg waves-effect waves-light"><i class="fa fa-google-plus"> </i></a>
+          <p class="white-text text-center">REDES SOCIALES</p>
+          <a target="_blank" href="#" class="btn-floating btn-large fb-bg waves-effect waves-light"><i class="fa fa-facebook"> </i></a>
+          <a target="_blank" href="#" class="btn-floating btn-large tw-bg waves-effect waves-light"><i class="fa fa-twitter"> </i></a>
+          <a target="_blank" href="#" class="btn-floating btn-large gplus-bg waves-effect waves-light"><i class="fa fa-google-plus"> </i></a>
         </div>
       </div>
     </div>
     <div class="footer-copyright">
       <div class="container">
-        <div class="col-md-10 col-md-offset-1"> 2016 <a href="http://127.0.0.1:8000">MaxFilm </a>
+        <div class="col-md-10 col-md-offset-1"> 2016 <a href="{%url 'maxfilm:index'%}">MaxFilm </a>
         </div>
       </div>
     </div>
