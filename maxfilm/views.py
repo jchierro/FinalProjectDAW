@@ -1,19 +1,17 @@
 from django.shortcuts import render, render_to_response
-from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from tmdb3 import set_locale, set_cache, Movie, set_key
-"""import json
+# from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from tmdb3 import set_locale, set_cache, Movie, set_key, Series
+import json
 from urllib2 import Request, urlopen
+
 headers = {
     'Accept': 'application/json',
     }
-con = Request('http://api.themoviedb.org/3/movie/' + id +
-              '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-              headers=headers)
-x = json.loads(urlopen(con).read())"""
 
-set_key('c1b10ae4b99ead975d0cbaf0d1045bf0')
+"""set_key('c1b10ae4b99ead975d0cbaf0d1045bf0')
 set_cache('null')
-set_locale("es")
+set_locale("es")"""
 
 
 def index(request):
@@ -24,21 +22,137 @@ def index(request):
     except PageNotAnInteger:
         page = 1
 
-    x = Movie.mostpopular()[:50]
-    y = Movie.upcoming()[:5]
-    y.sort(key=lambda Movie: Movie.releasedate)
+    con = Request('http://api.themoviedb.org/3/movie/popular?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&page='
+                  + str(page) + '&language=es', headers=headers)
+    popularMovies = json.loads(urlopen(con).read())
 
-    p = Paginator(x, 12)
-    result = p.page(page)
-    return render_to_response('maxfilm/index.html', {"result": result,
-                                                     "slider": y})
+    con = Request('http://api.themoviedb.org/3/movie/upcoming?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    upComing = json.loads(urlopen(con).read())
+
+    con = Request('http://api.tviso.com/news/promoted?auth_token=9a444a1c58417eeb1ac0623c1fb33f78', headers=headers)
+    news = json.loads(urlopen(con).read())
+
+    return render_to_response('maxfilm/index.html', {"result": popularMovies,
+                                                     "slider": upComing,
+                                                     "news": news})
 
 
-def viewItem(request, id):
-    """View any item"""
+def viewMovie(request, id):
+    """View any Movie"""
+    con = Request('http://api.themoviedb.org/3/movie/' + id +
+                  '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    movie = json.loads(urlopen(con).read())
 
-    x = Movie(id)
-    y = x.similar[:6]
-    z = x.youtube_trailers[0].geturl().split("=")[1]
+    con = Request('http://api.themoviedb.org/3/movie/' + id +
+                  '/credits?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    credits = json.loads(urlopen(con).read())
 
-    return render(request, 'maxfilm/viewItem.html', {"x": x, "y": y, "z": z})
+    con = Request('http://api.themoviedb.org/3/movie/' + id +
+                  '/videos?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    videos = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/movie/' + id +
+                  '/similar?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    similar = json.loads(urlopen(con).read())
+
+    return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
+                                                      'credits': credits,
+                                                      'videos': videos,
+                                                      'similar': similar})
+
+
+def viewTv(request, id):
+    """View Tv"""
+    con = Request('http://api.themoviedb.org/3/tv/' + id +
+                  '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    tv = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/tv/' + id +
+                  '/credits?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    credits = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/tv/' + id +
+                  '/similar?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    similar = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/tv/' + id +
+                  '/videos?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    videos = json.loads(urlopen(con).read())
+
+    seasons = []
+    count = 1
+    total = int(tv['number_of_seasons'])
+
+    while(count <= total):
+        con = Request('http://api.themoviedb.org/3/tv/' + id +
+                      '/season/' + str(count) + '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        seasons.append(json.loads(urlopen(con).read()))
+        count = count + 1
+
+    return render(request, 'maxfilm/viewTv.html', {'tv': tv,
+                                                   'credits': credits,
+                                                   'similar': similar,
+                                                   'videos': videos,
+                                                   'seasons': seasons})
+
+
+def viewPerson(request, id):
+    """View Person"""
+    con = Request('http://api.themoviedb.org/3/person/' + id +
+                  '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    person = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/person/' + id +
+                  '/tagged_images?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    images = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/person/' + id +
+                  '/combined_credits?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    credits = json.loads(urlopen(con).read())
+
+    return render(request, 'maxfilm/viewPerson.html', {'person': person,
+                                                       'images': images,
+                                                       'credits': credits})
+
+
+def Search(request):
+    """Search"""
+    if request.method == "GET":
+        text = str(request.GET["text"]).replace(" ", ",")
+    else:
+        text = ","
+
+    con = Request('http://api.themoviedb.org/3/search/movie/' +
+                  '?query=' + text +
+                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    resultMovie = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/search/tv/' +
+                  '?query=' + text +
+                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    resultTv = json.loads(urlopen(con).read())
+
+    con = Request('http://api.themoviedb.org/3/search/person/' +
+                  '?query=' + text +
+                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    resultPeople = json.loads(urlopen(con).read())
+
+    return render(request, 'maxfilm/search.html', {'resultMovie': resultMovie,
+                                                   'resultTv': resultTv,
+                                                   'resultPeople': resultPeople})

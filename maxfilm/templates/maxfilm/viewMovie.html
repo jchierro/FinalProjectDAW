@@ -1,0 +1,122 @@
+{% extends 'maxfilm/base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block content %}
+<div class="row center-block" style="background-image: url(http://image.tmdb.org/t/p/original/{{movie.backdrop_path}}); background-size: cover; background-position: 50% 10%; width: 100%; height: 550px; margin-top: -2%; margin-bottom: -13%;">
+</div>
+<div class="container">
+  <div class="row page-content">
+    <div class="col-md-3">
+      <div class="sidebar">
+        <div class="card-panel">
+          <div class="row text-center">
+            <img class="center-block" src="http://image.tmdb.org/t/p/w185/{{movie.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';">
+            <br>
+            <p><b>Marcar como:</b></p>
+            <a class="btn btn-info waves-effect waves-light">Recomendada</a>
+            <a class="btn btn-success waves-effect waves-light">Vista</a>
+            <a class="btn btn-warning waves-effect waves-light">Pendiente</a>
+          </div>
+        </div>
+        <br>
+      </div>
+      <ul class="collection with-header">
+        <li class="collection-header text-center blue"><h5 class="white-text">Información</h5></li>
+        <li class="collection-item"><b>Título Original:</b> {{movie.original_title}}</li>
+        <li class="collection-item"><b>Estreno:</b> {{movie.release_date}}</li>
+        <li class="collection-item"><b>Duración en minutos:</b>  {{movie.runtime}}</li>
+        <li class="collection-item"><b>Presupuesto:</b> ${{movie.budget|intcomma}}</li>
+        <li class="collection-item"><b>Ingresos:</b> ${{movie.revenue|intcomma}}</li>
+        <li class="collection-item"><b>Web Oficial:</b> <a href="{{movie.homepage}}"><i class="material-icons prefix">home</i></a></li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <h3 class="page-header text-red" style="color: white; font-weight: normal;">{{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}</h3>
+      <br><br><br>
+      <div class="row text-center">
+        <div class="well text-justify">{{movie.overview}}</div>
+        <ul class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab" href="#crew">Producción <span id="badgeCrew" class="badge red"></span></a></li>
+          <li><a data-toggle="tab" href="#cast">Reparto <span id="badgeCast" class="badge blue"></span></a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="crew" class="tab-pane fade in active">
+            <br>
+            <div class="row">
+              <div class="col-md-10 col-md-offset-1 slider autoplay">
+                {% for crew in credits.crew %}
+                <div class="col-md-3">
+                  <div class="thumbnail" style="height:250px;">
+                    <img style="width: 106px; height: 159px;" src="http://image.tmdb.org/t/p/w185/{{crew.profile_path}}" onerror="this.src='{% static 'img/noprofile.jpg' %}';">
+                    <div class="caption text-center">
+                      <h6><a href="{%url 'maxfilm:viewPerson' id=crew.id%}">{{crew.name}}</a></h6>
+                    </div>
+                  </div>
+                </div>
+                {% if forloop.first %}
+                <script type="text/javascript" style="display: none;">
+                document.getElementById('badgeCrew').innerHTML = {{forloop.revcounter}};
+                </script>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div id="cast" class="tab-pane fade">
+            <br>
+            <div class="row">
+              <div class="col-md-10 col-md-offset-1 slider autoplay">
+                {% for crew in credits.cast %}
+                <div class="col-md-3">
+                  <div class="thumbnail" style="height:250px;">
+                    <img style="width: 106px; height: 159px;" src="http://image.tmdb.org/t/p/w185/{{crew.profile_path}}" onerror="this.src='{% static 'img/noprofile.jpg' %}';">
+                    <div class="caption text-center">
+                      <h6><a href="{%url 'maxfilm:viewPerson' id=crew.id%}">{{crew.name}}</a></h6>
+                    </div>
+                  </div>
+                </div>
+                {% if forloop.first %}
+                <script type="text/javascript" style="display: none;">
+                document.getElementById('badgeCast').innerHTML = {{forloop.revcounter}};
+                </script>
+                {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-9 col-md-offset-1">
+          {% for video in videos.results %}
+          {% if video.site == 'YouTube' and forloop.first %}
+          <iframe width="700" height="360" src="https://www.youtube.com/embed/{{video.key}}" frameborder="0" allowfullscreen></iframe>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <br><br>
+      <div class="panel panel-success">
+        <div class="panel-heading">Películas similares</div>
+        <div class="panel-body">
+          <div class="row">
+            {% for similar in similar.results %}
+            {% if forloop.counter <= 6 %}
+            <div class="col-md-2">
+              <div class="thumbnail" style="height:234px;">
+                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}">
+                <div class="caption text-center">
+                  <h6><a href="{%url 'maxfilm:viewMovie' id=similar.id%}">{{similar.title|truncatechars:25}}</a></h6>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

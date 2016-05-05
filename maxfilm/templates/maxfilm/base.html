@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
+  <meta charset="ISO-8859-15">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MaxFilm</title>
@@ -16,6 +16,10 @@
   <link href="{% static 'css/mdb.css' %}" rel="stylesheet">
   <!-- Template style -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <!-- -->
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css"/>
+  <link href="{% static 'css/slick-theme.css' %}" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
   <nav class="navbar z-depth-2 red">
@@ -29,9 +33,9 @@
           <li><a href="" class="waves-effect waves-light">Películas <span class="sr-only">(current)</span></a></li>
           <li><a href="" class="waves-effect waves-light">Series <span class="sr-only">(current)</span></a></li>
         </ul>
-        <form class="navbar-form navbar-right waves-effect waves-light" role="search">
+        <form class="navbar-form navbar-right waves-effect waves-light" role="search" action="/search">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Buscar">
+            <input type="text" class="form-control" placeholder="Buscar" name="text">
           </div>
         </form>
       </div>
@@ -79,5 +83,19 @@
   <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
   <!-- Material Design Bootstrap -->
   <script type="text/javascript" src="{% static 'js/mdb.js' %}"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function () {
+    $('.autoplay').slick({
+      //dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000
+    });
+  });
+  </script>
 </body>
 </html>

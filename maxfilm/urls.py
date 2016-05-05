@@ -19,5 +19,8 @@ from . import views
 app_name = "maxfilm"
 urlpatterns = [
     url(r'^$', views.index, name="index"),
-    url(r'^(?P<id>[0-9]+)/$', views.viewItem, name="viewItem"),
+    url(r'^movie/(?P<id>[0-9]+)/$', views.viewMovie, name="viewMovie"),
+    url(r'^tv/(?P<id>[0-9]+)/$', views.viewTv, name="viewTv"),
+    url(r'^person/(?P<id>[0-9]+)/$', views.viewPerson, name="viewPerson"),
+    url(r'^search/$', views.Search, name="Search"),
 ]

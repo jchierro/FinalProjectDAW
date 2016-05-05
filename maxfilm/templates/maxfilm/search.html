@@ -1,0 +1,92 @@
+{% extends 'maxfilm/base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+  <div class="row page-content">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#movie">Películas <span id="badgeMovie" class="badge red"></span></a></li>
+      <li><a data-toggle="tab" href="#tv">TV <span id="badgeTv" class="badge blue"></span></a></li>
+      <li><a data-toggle="tab" href="#people">Personas <span id="badgePeople" class="badge green"></span></a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="movie" class="tab-pane fade in active">
+        {% for movie in resultMovie.results %}
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="card-panel hoverable" style="height: 278px;">
+              <div class="col-md-4">
+                <a href="{%url 'maxfilm:viewMovie' id=movie.id%}"><img style="width: 185px; height: 278px; margin-top: -20px; margin-left: -35px;" src="http://image.tmdb.org/t/p/w185/{{movie.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"></a>
+              </div>
+              <div class="col-md-8">
+                <h4 class="text-center" style="margin-top: -10px; width: 400px;">{{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}</h4>
+                <p class="text-justify" style="width: 400px;">{{movie.overview|truncatechars:270}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if forloop.first %}
+        <script type="text/javascript">
+        document.getElementById('badgeMovie').innerHTML = {{forloop.revcounter}};
+        </script>
+        {% endif %}
+        {% endfor %}
+      </div>
+      <div id="tv" class="tab-pane fade">
+        {% for tv in resultTv.results %}
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="card-panel hoverable" style="height: 278px;">
+              <div class="col-md-4">
+                <a href="{%url 'maxfilm:viewTv' id=tv.id%}"><img style="width: 185px; height: 278px; margin-top: -20px; margin-left: -35px;" src="http://image.tmdb.org/t/p/w185/{{tv.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"></a>
+              </div>
+              <div class="col-md-8">
+                <h4 class="text-center" style="margin-top: -10px; width: 400px;">{{tv.name|truncatechars:35}} - {{tv.first_air_date|slice:":4"}}</h4>
+                <p class="text-justify" style="width: 400px;">{{tv.overview|truncatechars:270}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if forloop.first %}
+        <script type="text/javascript">
+        document.getElementById('badgeTv').innerHTML = {{forloop.revcounter}};
+        </script>
+        {% endif %}
+        {% endfor %}
+      </div>
+      <div id="people" class="tab-pane fade">
+        {% for person in resultPeople.results %}
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="card-panel hoverable" style="height: 278px;">
+              <div class="col-md-4">
+                <a href="{%url 'maxfilm:viewPerson' id=person.id%}"><img style="width: 185px; height: 278px; margin-top: -20px; margin-left: -35px;" src="http://image.tmdb.org/t/p/w185/{{person.profile_path}}" onerror="this.src='{% static 'img/noprofile.jpg' %}';"></a>
+              </div>
+              <div class="col-md-8">
+                <h4 class="text-center" style="margin-top: -10px; width: 400px;">{{person.name|truncatechars:35}}</h4>
+                <ul class="collection with-header" style="width: 400px;">
+                  <li class="collection-header">
+                    <h5 class="text-center">Conocido por:</h5>
+                  </li>
+                  {% for aux in person.known_for %}
+                  <li class="collection-item">
+                    <div>{{aux.title|truncatechars:35}}<a href="{%url 'maxfilm:viewMovie' id=aux.id%}" class="secondary-content"><i class="material-icons">send</i></a></div>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if forloop.first %}
+        <script type="text/javascript">
+        document.getElementById('badgePeople').innerHTML = {{forloop.revcounter}};
+        </script>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
