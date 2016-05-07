@@ -51,14 +51,12 @@
           {% for season in seasons %}
           {% if forloop.first %}
           <div id="{{season.season_number}}" class="tab-pane fade in active">
-            <!--<h3>{{season.name}}</h3>-->
             <p class="text-justify">{{season.overview}}</p>
             <div class="row col-md-4 col-md-offset-4">
             </div>
           </div>
           {% else %}
           <div id="{{season.season_number}}" class="tab-pane fade">
-            <!--<h3>{{season.name}}</h3>-->
             <p class="text-justify">{{season.overview}}</p>
           </div>
           {% endif %}
@@ -118,7 +116,7 @@
       </div>
       <div class="row">
         <div class="col-md-9 col-md-offset-1">
-          {% for video in videos.results %}
+          {% for video in videos %}
           {% if video.site == 'YouTube' and forloop.first %}
           <iframe width="700" height="360" src="https://www.youtube.com/embed/{{video.key}}" frameborder="0" allowfullscreen></iframe>
           {% endif %}
@@ -130,8 +128,7 @@
         <div class="panel-heading">Series similares</div>
         <div class="panel-body">
           <div class="row">
-            {% for similar in similar.results %}
-            {% if forloop.counter <= 6 %}
+            {% for similar in similar %}
             <div class="col-md-2">
               <div class="thumbnail" style="height:234px;">
                 <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}">
@@ -140,12 +137,28 @@
                 </div>
               </div>
             </div>
-            {% endif %}
             {% endfor %}
           </div>
         </div>
       </div>
     </div>
+    <div id="disqus_thread"></div>
   </div>
 </div>
+{% if not debug %}
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES * * */
+var disqus_shortname = 'maxfilm';
+var disqus_identifier = 'tv/{{tv.id}}';
+var disqus_title = '{{tv.name}}';
+var disqus_url = window.location.href;
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+{% endif %}
 {% endblock %}

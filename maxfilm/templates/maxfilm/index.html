@@ -79,8 +79,7 @@
       <h1 class="page-header">Noticias</h1>
     </div>
     <div class="row text-center">
-      {% for new in news.results %}
-      {% if forloop.counter <= 12 %}
+      {% for new in news %}
       <div class="col-md-4">
         <div class="card hoverable" style="height: 535px;">
           <div class="card-image">
@@ -97,7 +96,6 @@
           </div>
         </div>
       </div>
-      {% endif %}
       {% endfor %}
     </div>
   </div>

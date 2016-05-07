@@ -26,9 +26,9 @@ def index(request):
     upComing = json.loads(urlopen(con).read())['results'][:5]
 
     con = Request('http://api.tviso.com/news/promoted?auth_token=' + apiCode, headers=headers)
-    news = json.loads(urlopen(con).read())
+    news = json.loads(urlopen(con).read())['results'][:12]
 
-    for new in news['results'][:12]:
+    for new in news:
         new['title'] = new['title'].replace("&#039;", "'")
         new['short_text'] = new['short_text'].replace("&#039;", "'")
 
@@ -51,12 +51,12 @@ def viewMovie(request, id):
     con = Request('http://api.themoviedb.org/3/movie/' + id +
                   '/videos?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    videos = json.loads(urlopen(con).read())
+    videos = json.loads(urlopen(con).read())['results']
 
     con = Request('http://api.themoviedb.org/3/movie/' + id +
                   '/similar?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    similar = json.loads(urlopen(con).read())
+    similar = json.loads(urlopen(con).read())['results'][:6]
 
     return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
                                                       'credits': credits,
@@ -79,12 +79,12 @@ def viewTv(request, id):
     con = Request('http://api.themoviedb.org/3/tv/' + id +
                   '/similar?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    similar = json.loads(urlopen(con).read())
+    similar = json.loads(urlopen(con).read())['results'][:6]
 
     con = Request('http://api.themoviedb.org/3/tv/' + id +
                   '/videos?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    videos = json.loads(urlopen(con).read())
+    videos = json.loads(urlopen(con).read())['results']
 
     seasons = []
     count = 1
@@ -114,7 +114,7 @@ def viewPerson(request, id):
     con = Request('http://api.themoviedb.org/3/person/' + id +
                   '/tagged_images?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    images = json.loads(urlopen(con).read())
+    images = json.loads(urlopen(con).read())['results'][0]
 
     con = Request('http://api.themoviedb.org/3/person/' + id +
                   '/combined_credits?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
