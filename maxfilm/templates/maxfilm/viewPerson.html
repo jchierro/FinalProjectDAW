@@ -28,28 +28,75 @@
       <br><br><br>
       <div class="row text-center">
         <div class="well text-justify">{{person.biography}}</div>
-        {% for image in images.profiles %}
-        {{image.file_path}}
-        {% endfor %}
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#crew">Produciendo <span id="badgeCrew" class="badge red"></span></a></li>
           <li><a data-toggle="tab" href="#cast">Actuando <span id="badgeCast" class="badge blue"></span></a></li>
         </ul>
         <div class="tab-content">
-          <div id="crew" class="tab-pane fade in active">
+          <div id="crew" class="tab-pane fade in active table">
             <br>
             <div class="row">
-              {% for crew in credits.crew %}
-              {{crew.title}}<br>
-              {% endfor %}
+              <div class="col-md-10 col-md-offset-1">
+                <table class="table table-striped" id="tableCrew">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Año</th>
+                      <th class="text-center">Título</th>
+                      <th class="text-center">Trabajo</th>
+                      <th class="text-center">Tipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for crew in credits.crew %}
+                    <tr>
+                      <td>{{crew.release_date|slice:"4"}}</td>
+                      <td>
+                        {% if crew.media_type == "movie"%}
+                        <a href="{%url 'maxfilm:viewMovie' id=crew.id%}">{{crew.title}}</a>
+                        {% else %}
+                        <a href="{%url 'maxfilm:viewTv' id=crew.id%}">{{crew.title}}</a>
+                        {% endif %}
+                      </td>
+                      <td>{{crew.job}}</td>
+                      <td>{{crew.media_type}}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <div id="cast" class="tab-pane fade">
             <br>
             <div class="row">
-              {% for crew in credits.cast %}
-              {{crew.title}}<br>
-              {% endfor %}
+              <div class="col-md-10 col-md-offset-1">
+                <table class="table table-striped" id="tableCast" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Año</th>
+                      <th class="text-center">Título</th>
+                      <th class="text-center">Personaje</th>
+                      <th class="text-center">Tipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for crew in credits.cast %}
+                    <tr>
+                      <td>{{crew.release_date|slice:"4"}}</td>
+                      <td>
+                        {% if crew.media_type == "movie"%}
+                        <a href="{%url 'maxfilm:viewMovie' id=crew.id%}">{{crew.title}}</a>
+                        {% else %}
+                        <a href="{%url 'maxfilm:viewTv' id=crew.id%}">{{crew.title}}</a>
+                        {% endif %}
+                      </td>
+                      <td>{{crew.character}}</td>
+                      <td>{{crew.media_type}}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -63,7 +110,7 @@
           {% endfor %}
         </div>
       </div>
-      
+
       <div class="panel panel-success">
         <div class="panel-heading">Conocido por</div>
         <div class="panel-body">
