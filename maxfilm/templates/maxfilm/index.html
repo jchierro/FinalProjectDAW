@@ -39,7 +39,7 @@
           <li data-target="#carousel-example-generic" data-slide-to="4"></li>
         </ol>
         <div class="carousel-inner" role="listbox">
-          {% for x in slider.results %}
+          {% for x in slider %}
           {% if forloop.first %}
           <div class="item active">
             <img width="848" src="http://image.tmdb.org/t/p/w780/{{x.backdrop_path}}"/>

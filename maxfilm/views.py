@@ -17,24 +17,22 @@ set_locale("es")"""
 def index(request):
     """View index"""
 
-    try:
-        page = request.GET.get('page', 1)
-    except PageNotAnInteger:
-        page = 1
-
-    con = Request('http://api.themoviedb.org/3/movie/popular?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&page='
-                  + str(page) + '&language=es', headers=headers)
-    popularMovies = json.loads(urlopen(con).read())
+    con = Request('http://api.tviso.com/auth_token?id_api=3489&secret=nCHkh3DheNRqNcR497aC',
+                  headers=headers)
+    apiCode = json.loads(urlopen(con).read())['auth_token']
 
     con = Request('http://api.themoviedb.org/3/movie/upcoming?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
-    upComing = json.loads(urlopen(con).read())
+    upComing = json.loads(urlopen(con).read())['results'][:5]
 
-    con = Request('http://api.tviso.com/news/promoted?auth_token=9a444a1c58417eeb1ac0623c1fb33f78', headers=headers)
+    con = Request('http://api.tviso.com/news/promoted?auth_token=' + apiCode, headers=headers)
     news = json.loads(urlopen(con).read())
 
-    return render_to_response('maxfilm/index.html', {"result": popularMovies,
-                                                     "slider": upComing,
+    for new in news['results'][:12]:
+        new['title'] = new['title'].replace("&#039;", "'")
+        new['short_text'] = new['short_text'].replace("&#039;", "'")
+
+    return render_to_response('maxfilm/index.html', {"slider": upComing,
                                                      "news": news})
 
 
