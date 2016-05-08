@@ -20,8 +20,18 @@
                 <a href="{%url 'maxfilm:viewMovie' id=movie.id%}"><img style="width: 185px; height: 278px; margin-top: -20px; margin-left: -35px;" src="http://image.tmdb.org/t/p/w185/{{movie.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"></a>
               </div>
               <div class="col-md-8">
-                <h4 class="text-center" style="margin-top: -10px; width: 400px;">{{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}</h4>
+                <h4 class="text-center" style="margin-top: -10px; width: 400px;">
+                  {% if movie.title and movie.release_date %}
+                  {{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}
+                  {% else %}
+                  {{movie.title|truncatechars:35}}
+                  {% endif %}
+                </h4>
+                {% if movie.overview %}
                 <p class="text-justify" style="width: 400px;">{{movie.overview|truncatechars:270}}</p>
+                {% else %}
+                <p class="text-center" style="width: 400px;">Sin descripción</p>
+                {% endif %}                
               </div>
             </div>
           </div>
@@ -42,8 +52,18 @@
                 <a href="{%url 'maxfilm:viewTv' id=tv.id%}"><img style="width: 185px; height: 278px; margin-top: -20px; margin-left: -35px;" src="http://image.tmdb.org/t/p/w185/{{tv.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"></a>
               </div>
               <div class="col-md-8">
-                <h4 class="text-center" style="margin-top: -10px; width: 400px;">{{tv.name|truncatechars:35}} - {{tv.first_air_date|slice:":4"}}</h4>
+                <h4 class="text-center" style="margin-top: -10px; width: 400px;">
+                  {% if tv.name and tv.first_air_date %}
+                  {{tv.name|truncatechars:35}} - {{tv.first_air_date|slice:":4"}}
+                  {% else %}
+                  {{tv.name|truncatechars:35}}
+                  {% endif %}
+                </h4>
+                {% if tv.overview %}
                 <p class="text-justify" style="width: 400px;">{{tv.overview|truncatechars:270}}</p>
+                {% else %}
+                <p class="text-center" style="width: 400px;">Sin descripción</p>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -70,9 +90,15 @@
                     <h5 class="text-center">Conocido por:</h5>
                   </li>
                   {% for aux in person.known_for %}
+                  {% if aux.media_type == "movie" and aux.id %}
                   <li class="collection-item">
                     <div>{{aux.title|truncatechars:35}}<a href="{%url 'maxfilm:viewMovie' id=aux.id%}" class="secondary-content"><i class="material-icons">send</i></a></div>
                   </li>
+                  {% else %}
+                  <li class="collection-item">
+                    <div>{{aux.name|truncatechars:35}}<a href="{%url 'maxfilm:viewTv' id=aux.id%}" class="secondary-content"><i class="material-icons">send</i></a></div>
+                  </li>
+                  {% endif %}
                   {% endfor %}
                 </ul>
               </div>

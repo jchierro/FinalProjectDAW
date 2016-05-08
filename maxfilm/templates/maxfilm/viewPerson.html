@@ -3,7 +3,9 @@
 {% load humanize %}
 
 {% block content %}
+{% if images %}
 <div class="row center-block" style="background-image: url(http://image.tmdb.org/t/p/original/{{images.file_path}}); background-size: cover; background-position: 50% 10%; width: 100%; height: 550px; margin-top: -2%; margin-bottom: -13%;"></div>
+{% endif %}
 <div class="container">
   <div class="row page-content">
     <div class="col-md-3">
@@ -17,17 +19,21 @@
       </div>
       <ul class="collection with-header">
         <li class="collection-header text-center blue"><h5 class="white-text">Información</h5></li>
-        <li class="collection-item"><b>Fecha nacimiento:</b> {{person.birthday}}</li>
-        <li class="collection-item"><b>Fecha fallecimiento:</b> {{person.deathday}}</li>
-        <li class="collection-item"><b>Lugar de nacimiento:</b> {{person.place_of_birth}}</li>
+        <li class="collection-item"><b>Fecha nacimiento:</b> {% if person.birthday %}{{person.birthday}}{% else %}-{% endif%}</li>
+        <li class="collection-item"><b>Fecha fallecimiento:</b> {% if person.deathday %}{{person.deathday}}{% else %}-{% endif%}</li>
+        <li class="collection-item"><b>Lugar de nacimiento:</b> {% if person.place_of_birth %}{{person.place_of_birth}}{% else %}-{% endif%}</li>
         <li class="collection-item"><b>Web Oficial:</b> <a href="{{person.homepage}}"><i class="material-icons prefix">home</i></a></li>
       </ul>
     </div>
     <div class="col-md-9">
+      {% if images %}
       <h3 class="page-header text-red" style="color: white; font-weight: normal;">{{person.name}}</h3>
+      {% else %}
+      <h3 class="page-header text-red" style="font-weight: normal;">{{person.name}}</h3>
+      {% endif %}
       <br><br><br>
       <div class="row text-center">
-        <div class="well text-justify">{{person.biography}}</div>
+        <div class="well text-justify">{% if person.biography %}{{person.biography}}{% else %}Sin biografía{% endif %}</div>
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#crew">Produciendo <span id="badgeCrew" class="badge red"></span></a></li>
           <li><a data-toggle="tab" href="#cast">Actuando <span id="badgeCast" class="badge blue"></span></a></li>
@@ -48,6 +54,7 @@
                   </thead>
                   <tbody>
                     {% for crew in credits.crew %}
+                    {% if crew.release_date and crew.title and crew.job and crew.media_type %}
                     <tr>
                       <td>{{crew.release_date|slice:"4"}}</td>
                       <td>
@@ -60,6 +67,7 @@
                       <td>{{crew.job}}</td>
                       <td>{{crew.media_type}}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                   </tbody>
                 </table>
@@ -81,6 +89,7 @@
                   </thead>
                   <tbody>
                     {% for crew in credits.cast %}
+                    {% if crew.release_date and crew.title and crew.character and crew.media_type %}
                     <tr>
                       <td>{{crew.release_date|slice:"4"}}</td>
                       <td>
@@ -93,40 +102,12 @@
                       <td>{{crew.character}}</td>
                       <td>{{crew.media_type}}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-9 col-md-offset-1">
-          {% for video in videos.results %}
-          {% if video.site == 'YouTube' and forloop.first %}
-          <iframe width="700" height="360" src="https://www.youtube.com/embed/{{video.key}}" frameborder="0" allowfullscreen></iframe>
-          {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="panel panel-success">
-        <div class="panel-heading">Conocido por</div>
-        <div class="panel-body">
-          <div class="row">
-            {% for similar in similar.results %}
-            {% if forloop.counter <= 6 %}
-            <div class="col-md-2">
-              <div class="thumbnail" style="height:234px;">
-                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}">
-                <div class="caption text-center">
-                  <h6><a href="{%url 'maxfilm:viewMovie' id=similar.id%}">{{similar.title|truncatechars:25}}</a></h6>
-                </div>
-              </div>
-            </div>
-            {% endif %}
-            {% endfor %}
           </div>
         </div>
       </div>

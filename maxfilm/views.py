@@ -1,17 +1,11 @@
 from django.shortcuts import render, render_to_response
-# from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-# from tmdb3 import set_locale, set_cache, Movie, set_key, Series
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 import json
-from urllib2 import Request, urlopen
+from urllib2 import Request, urlopen, HTTPError
 
 headers = {
     'Accept': 'application/json',
     }
-
-"""set_key('c1b10ae4b99ead975d0cbaf0d1045bf0')
-set_cache('null')
-set_locale("es")"""
 
 
 def index(request):
@@ -111,10 +105,14 @@ def viewPerson(request, id):
                   headers=headers)
     person = json.loads(urlopen(con).read())
 
-    con = Request('http://api.themoviedb.org/3/person/' + id +
-                  '/tagged_images?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-                  headers=headers)
-    images = json.loads(urlopen(con).read())['results'][0]
+    images = []
+    try:
+        con = Request('http://api.themoviedb.org/3/person/' + id +
+                      '/tagged_images?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        images = json.loads(urlopen(con).read())['results'][0]
+    except HTTPError, e:
+        pass
 
     con = Request('http://api.themoviedb.org/3/person/' + id +
                   '/combined_credits?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
