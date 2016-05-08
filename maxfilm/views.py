@@ -84,12 +84,15 @@ def viewTv(request, id):
     count = 1
     total = int(tv['number_of_seasons'])
 
-    while(count <= total):
-        con = Request('http://api.themoviedb.org/3/tv/' + id +
-                      '/season/' + str(count) + '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-                      headers=headers)
-        seasons.append(json.loads(urlopen(con).read()))
-        count = count + 1
+    try:
+        while(count <= total):
+            con = Request('http://api.themoviedb.org/3/tv/' + id +
+                          '/season/' + str(count) + '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                          headers=headers)
+            seasons.append(json.loads(urlopen(con).read()))
+            count = count + 1
+    except HTTPError:
+        pass
 
     return render(request, 'maxfilm/viewTv.html', {'tv': tv,
                                                    'credits': credits,

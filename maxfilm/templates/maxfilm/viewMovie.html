@@ -3,8 +3,10 @@
 {% load humanize %}
 
 {% block content %}
+{% if movie.backdrop_path %}
 <div class="row center-block" style="background-image: url(http://image.tmdb.org/t/p/original/{{movie.backdrop_path}}); background-size: cover; background-position: 50% 10%; width: 100%; height: 550px; margin-top: -2%; margin-bottom: -13%;">
 </div>
+{% endif %}
 <div class="container">
   <div class="row page-content">
     <div class="col-md-3">
@@ -25,17 +27,33 @@
         <li class="collection-header text-center blue"><h5 class="white-text">Información</h5></li>
         <li class="collection-item"><b>Título Original:</b> {{movie.original_title}}</li>
         <li class="collection-item"><b>Estreno:</b> {{movie.release_date}}</li>
-        <li class="collection-item"><b>Duración en minutos:</b>  {{movie.runtime}}</li>
-        <li class="collection-item"><b>Presupuesto:</b> ${{movie.budget|intcomma}}</li>
-        <li class="collection-item"><b>Ingresos:</b> ${{movie.revenue|intcomma}}</li>
+        <li class="collection-item"><b>Duración en minutos:</b>  {% if movie.runtime %}{{movie.runtime}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Presupuesto:</b> {% if movie.budget %}${{movie.budget|intcomma}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Ingresos:</b> {% if movie.revenue %}${{movie.revenue|intcomma}}{% else %}-{% endif %}</li>
         <li class="collection-item"><b>Web Oficial:</b> <a href="{{movie.homepage}}"><i class="material-icons prefix">home</i></a></li>
       </ul>
+      {% if movie.genres %}
+      <ul class="collection with-header">
+        <li class="collection-header text-center blue"><h5 class="white-text">Géneros</h5></li>
+        {% for genre in movie.genres %}
+        <li class="collection-item">{{genre.name}}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </div>
     <div class="col-md-9">
+      {% if movie.backdrop_path %}
       <h3 class="page-header text-red" style="color: white; font-weight: normal;">{{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}</h3>
+      {% else %}
+      <h3 class="page-header" style="font-weight: normal;">{{movie.title|truncatechars:35}} - {{movie.release_date|slice:":4"}}</h3>
+      {% endif %}
       <br><br><br>
       <div class="row text-center">
+        {% if movie.overview %}
         <div class="well text-justify">{{movie.overview}}</div>
+        {% else %}
+        <div class="well text-center">Sin descripción</div>
+        {% endif %}
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#crew">Producción <span id="badgeCrew" class="badge red"></span></a></li>
           <li><a data-toggle="tab" href="#cast">Reparto <span id="badgeCast" class="badge blue"></span></a></li>
@@ -43,6 +61,7 @@
         <div class="tab-content">
           <div id="crew" class="tab-pane fade in active">
             <br>
+            {% if credits.crew %}
             <div class="row">
               <div class="col-md-10 col-md-offset-1 slider autoplay">
                 {% for crew in credits.crew %}
@@ -62,9 +81,13 @@
                 {% endfor %}
               </div>
             </div>
+            {% else %}
+            <p class="text-center">Lo sentimos, pero no se conoce personal de producción.</p>
+            {% endif %}
           </div>
           <div id="cast" class="tab-pane fade">
             <br>
+            {% if credits.cast %}
             <div class="row">
               <div class="col-md-10 col-md-offset-1 slider autoplay">
                 {% for crew in credits.cast %}
@@ -84,9 +107,13 @@
                 {% endfor %}
               </div>
             </div>
+            {% else %}
+            <p class="text-center">Lo sentimos, pero no se conoce personal de reparto.</p>
+            {% endif %}
           </div>
         </div>
       </div>
+      <hr>
       <div class="row">
         <div class="col-md-9 col-md-offset-1">
           {% for video in videos %}
@@ -96,6 +123,7 @@
           {% endfor %}
         </div>
       </div>
+      {% if similar %}
       <br><br>
       <div class="panel panel-success">
         <div class="panel-heading">Películas similares</div>
@@ -114,19 +142,21 @@
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
-    <div id="disqus_thread"></div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1"><div id="disqus_thread"></div>
+    </div>
   </div>
+</div>
 </div>
 {% if not debug %}
 <script type="text/javascript">
-/* * * CONFIGURATION VARIABLES * * */
 var disqus_shortname = 'maxfilm';
 var disqus_identifier = 'movie/{{movie.id}}';
 var disqus_title = '{{movie.title}}';
 var disqus_url = window.location.href;
 
-/* * * DON'T EDIT BELOW THIS LINE * * */
 (function() {
   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

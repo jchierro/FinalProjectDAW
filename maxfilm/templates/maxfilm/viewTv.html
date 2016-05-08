@@ -37,7 +37,15 @@
       <h3 class="page-header text-red" style="color: white; font-weight: normal;">{{tv.name|truncatechars:35}} - {{tv.first_air_date|slice:":4"}}</h3>
       <br><br><br>
       <div class="row text-center">
-        <div class="well text-justify">{{tv.overview}}</div>
+        {% if tv.overview == "None" %}
+        <div class="well text-center">
+          Sin descripción
+        </div>
+        {% else %}
+        <div class="well text-justify">
+          {{tv.overview}}
+        </div>
+        {% endif %}
         <ul class="nav nav-tabs">
           {% for season in seasons %}
           {% if forloop.first %}
