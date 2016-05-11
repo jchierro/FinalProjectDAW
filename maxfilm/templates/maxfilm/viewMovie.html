@@ -132,7 +132,7 @@
             {% for similar in similar %}
             <div class="col-md-2">
               <div class="thumbnail" style="height:234px;">
-                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}">
+                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';">
                 <div class="caption text-center">
                   <h6><a href="{%url 'maxfilm:viewMovie' id=similar.id%}">{{similar.title|truncatechars:25}}</a></h6>
                 </div>

@@ -3,8 +3,10 @@
 {% load humanize %}
 
 {% block content %}
+{% if tv.backdrop_path %}
 <div class="row center-block" style="background-image: url(http://image.tmdb.org/t/p/original/{{tv.backdrop_path}}); background-size: cover; background-position: 50% 10%; width: 100%; height: 550px; margin-top: -2%; margin-bottom: -13%;">
 </div>
+{% endif %}
 <div class="container">
   <div class="row page-content">
     <div class="col-md-3">
@@ -24,34 +26,50 @@
       <ul class="collection with-header">
         <li class="collection-header text-center blue"><h5 class="white-text">Información</h5></li>
         <li class="collection-item"><b>Título Original:</b> {{tv.original_name}}</li>
-        <li class="collection-item"><b>Estreno:</b> {{tv.first_air_date}}</li>
-        <li class="collection-item"><b>Última emisión:</b>  {{tv.last_air_date}}</li>
-        <li class="collection-item"><b>Estado:</b> {{tv.status}}</li>
-        <li class="collection-item"><b>Nº de episodios:</b> {{tv.number_of_episodes}}</li>
-        <li class="collection-item"><b>Nº de temporadas:</b> {{tv.number_of_seasons}}</li>
-        <li class="collection-item"><b>Duración episodio:</b> {{tv.episode_run_time}}</li>
+        <li class="collection-item"><b>Estreno:</b> {% if tv.first_air_date %}{{tv.first_air_date}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Última emisión:</b>  {%if tv.last_air_date %}{{tv.last_air_date}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Estado:</b> {% if tv.status %}{{tv.status}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Nº de episodios:</b> {% if tv.number_of_episodes %}{{tv.number_of_episodes}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Nº de temporadas:</b> {% if tv.number_of_seasons %}{{tv.number_of_seasons}}{% else %}-{% endif %}</li>
+        <li class="collection-item"><b>Duración episodio:</b> {% if tv.episode_run_time %}{{tv.episode_run_time}}{% else %}-{% endif %}</li>
         <li class="collection-item"><b>Web Oficial:</b> <a href="{{tv.homepage}}"><i class="material-icons prefix">home</i></a></li>
       </ul>
+      {% if tv.genres %}
+      <ul class="collection with-header">
+        <li class="collection-header text-center blue"><h5 class="white-text">Géneros</h5></li>
+        {% for genre in tv.genres %}
+        <li class="collection-item">{{genre.name}}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </div>
     <div class="col-md-9">
+      {% if tv.backdrop_path %}
       <h3 class="page-header text-red" style="color: white; font-weight: normal;">{{tv.name|truncatechars:35}} - {{tv.first_air_date|slice:":4"}}</h3>
+      {% else %}
+      <h3 class="page-header text-red" style="font-weight: normal;">{{tv.name|truncatechars:35}}</h3>
+      {% endif %}
       <br><br><br>
       <div class="row text-center">
-        {% if tv.overview == "None" %}
+        {% if tv.overview %}
         <div class="well text-center">
-          Sin descripción
+          {{tv.overview}}
         </div>
         {% else %}
-        <div class="well text-justify">
-          {{tv.overview}}
+        <div class="well text-center">
+          Sin descripción
         </div>
         {% endif %}
         <ul class="nav nav-tabs">
           {% for season in seasons %}
           {% if forloop.first %}
+          {% if season.season_number %}
           <li class="active"><a data-toggle="tab" href="#{{season.season_number}}">Temporada {{season.season_number}}</a></li>
+          {% endif %}
           {% else %}
+          {% if season.season_number %}
           <li><a data-toggle="tab" href="#{{season.season_number}}">Temporada {{season.season_number}}</a></li>
+          {% endif %}
           {% endif %}
           {% endfor %}
         </ul>
@@ -59,13 +77,11 @@
           {% for season in seasons %}
           {% if forloop.first %}
           <div id="{{season.season_number}}" class="tab-pane fade in active">
-            <p class="text-justify">{{season.overview}}</p>
-            <div class="row col-md-4 col-md-offset-4">
-            </div>
+            <p class="text-justify">{% if season.overview %}{{season.overview}}{% else %}Sin información{% endif %}</p>
           </div>
           {% else %}
           <div id="{{season.season_number}}" class="tab-pane fade">
-            <p class="text-justify">{{season.overview}}</p>
+            <p class="text-justify">{% if season.overview %}{{season.overview}}{% else %}Sin información{% endif %}</p>
           </div>
           {% endif %}
           {% endfor %}
@@ -78,6 +94,7 @@
         <div class="tab-content">
           <div id="crew" class="tab-pane fade in active">
             <br>
+            {% if credits.crew %}
             <div class="row">
               <div class="col-md-10 col-md-offset-1 slider autoplay">
                 {% for crew in credits.crew %}
@@ -97,9 +114,13 @@
                 {% endfor %}
               </div>
             </div>
+            {% else %}
+            <p class="text-center">Lo sentimos, pero no se conoce personal de producción.</p>
+            {% endif %}
           </div>
           <div id="cast" class="tab-pane fade">
             <br>
+            {% if credits.cast %}
             <div class="row">
               <div class="col-md-10 col-md-offset-1 slider autoplay">
                 {% for crew in credits.cast %}
@@ -119,6 +140,9 @@
                 {% endfor %}
               </div>
             </div>
+            {% else %}
+            <p class="text-center">Lo sentimos, pero no se conoce personal de reparto.</p>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -131,6 +155,7 @@
           {% endfor %}
         </div>
       </div>
+      {% if similar %}
       <br>
       <div class="panel panel-success">
         <div class="panel-heading">Series similares</div>
@@ -139,7 +164,7 @@
             {% for similar in similar %}
             <div class="col-md-2">
               <div class="thumbnail" style="height:234px;">
-                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}">
+                <img src="http://image.tmdb.org/t/p/w185/{{similar.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';">
                 <div class="caption text-center">
                   <h6><a href="{%url 'maxfilm:viewTv' id=similar.id%}">{{similar.name|truncatechars:25}}</a></h6>
                 </div>
@@ -149,9 +174,13 @@
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
-    <div id="disqus_thread"></div>
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1"><div id="disqus_thread"></div>
+    </div>
   </div>
+</div>
 </div>
 {% if not debug %}
 <script type="text/javascript">
