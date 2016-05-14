@@ -155,3 +155,44 @@ def Search(request):
     return render(request, 'maxfilm/search.html', {'resultMovie': resultMovie,
                                                    'resultTv': resultTv,
                                                    'resultPeople': resultPeople})
+
+
+def Movies(request):
+    """Movies in general"""
+    movies = []
+    num = ''
+    page = ''
+
+    if 'genre' in request.GET:
+        if 'page' in request.GET:
+            page = str(request.GET["page"])
+        else:
+            page = '1'
+
+        num = str(request.GET["genre"])
+        con = Request('http://api.themoviedb.org/3/genre/' + num +
+                      '/movies?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movies = json.loads(urlopen(con).read())['results']
+
+    if 'query' in request.GET:
+        pass
+
+    if 'genre' not in request.GET and 'query' not in request.GET:
+        if 'page' in request.GET:
+            page = str(request.GET["page"])
+        else:
+            page = '1'
+
+        con = Request('http://api.themoviedb.org/3/movie/popular?' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movies = json.loads(urlopen(con).read())['results']
+
+    con = Request('http://api.themoviedb.org/3/genre/movie/list?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    genres = json.loads(urlopen(con).read())['genres']
+
+    return render(request, 'maxfilm/movies.html', {'genres': genres,
+                                                   'movies': movies,
+                                                   'genre': num,
+                                                   'page': page})
