@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^person/(?P<id>[0-9]+)/$', views.viewPerson, name="viewPerson"),
     url(r'^search/$', views.Search, name="Search"),
     url(r'^movies/$', views.Movies, name="Movies"),
+    url(r'^tv/$', views.Tv, name="Tv"),
+    url(r'^people/$', views.People, name="People"),
 ]

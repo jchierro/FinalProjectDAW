@@ -26,7 +26,8 @@
         <ul class="nav navbar-nav">
           <li><a href="{%url 'maxfilm:index'%}" class="waves-effect waves-light">Inicio <span class="sr-only">(current)</span></a></li>
           <li><a href="{%url 'maxfilm:Movies'%}" class="waves-effect waves-light">Películas <span class="sr-only">(current)</span></a></li>
-          <li><a href="" class="waves-effect waves-light">Series <span class="sr-only">(current)</span></a></li>
+          <li><a href="{%url 'maxfilm:Tv'%}" class="waves-effect waves-light">Series <span class="sr-only">(current)</span></a></li>
+          <li><a href="{%url 'maxfilm:People'%}" class="waves-effect waves-light">Personas <span class="sr-only">(current)</span></a></li>
         </ul>
         <form class="navbar-form navbar-right waves-effect waves-light" role="search" action="/search">
           <div class="form-group">
@@ -52,7 +53,10 @@
         <div class="col-md-2">
           <p class="white-text center-on-small-only">ENLACES</p>
           <ul>
-            <li><a href="#" data-toggle="modal" data-target="#myModal" class="grey-text text-lighten-3" href="#!">....</a></li>
+            <li><a href="{%url 'maxfilm:index'%}" class="waves-effect waves-light">Inicio </a></li>
+            <li><a href="{%url 'maxfilm:Movies'%}" class="waves-effect waves-light">Películas </a></li>
+            <li><a href="{%url 'maxfilm:Tv'%}" class="waves-effect waves-light">Series </a></li>
+            <li><a href="{%url 'maxfilm:People'%}" class="waves-effect waves-light">Personas </a></li>
           </ul>
         </div>
         <hr class="hidden-lg hidden-md">
@@ -91,9 +95,18 @@
       "order": [[ 0, "desc" ]]
     } );
 
+    {% if action %}
+    $({{action}}).toggleClass('active');
+    $('#status').children().each(function() {
+      if ($(this).attr('id') == {{action}}) {
+        $(this).toggleClass('active');
+      };
+    });
+    {% endif %}
+
     {% if genre %}
     $('#genres').children().each(function() {
-      if ($(this).attr('id') == "genre" + {{genre}}) {
+      if ($(this).attr('id') == "genre_" + {{genre}}) {
         $(this).toggleClass('active');
       };
     });

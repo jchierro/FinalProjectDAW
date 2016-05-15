@@ -1,0 +1,55 @@
+{% extends 'maxfilm/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Personas</h1>
+        </div>
+    </div>
+    <div class="row page-content">
+        <div class="col-md-3">
+            <div class="collection z-depth-2" id="status">
+                <a class="collection-item blue text-center"><h4 class="white-text">Mostrar</h4></a>
+                <a id="popular" class="collection-item" href="?query=popular">Populares</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {% for person in people %}
+            <div class="col-md-3">
+                <div class="card hoverable text-center" style="height:540px">
+                    <div class="card-image">
+                        <img height="278" src="http://image.tmdb.org/t/p/w185/{{person.profile_path}}" onerror="this.src='{% static 'img/noprofile.jpg' %}';"/>
+                    </div>
+                    <div class="card-content" style="height:130px">
+                        <p><b>{{person.name|truncatechars:40}}</b></p>
+                    </div>
+                    <div class="card-action text-center">
+                        <a href="{%url 'maxfilm:viewPerson' id=person.id%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-10 col-md-offset-3">
+                    <ul class="pagination pag-circle" id="pagination">
+                        <li><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                        <li id="1"><a href="?page=1">1</a></li>
+                        <li id="2"><a href="?page=2">2</a></li>
+                        <li id="3"><a href="?page=3">3</a></li>
+                        <li id="4"><a href="?page=4">4</a></li>
+                        <li id="5"><a href="?page=5">5</a></li>
+                        <li id="6"><a href="?page=6">6</a></li>
+                        <li id="7"><a href="?page=7">7</a></li>
+                        <li id="8"><a href="?page=8">8</a></li>
+                        <li id="9"><a href="?page=9">9</a></li>
+                        <li id="10"><a href="?page=10">10</a></li>
+                        <li><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

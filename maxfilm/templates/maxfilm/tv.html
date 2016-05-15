@@ -5,17 +5,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="page-header">Películas</h1>
+            <h1 class="page-header">Series</h1>
         </div>
     </div>
     <div class="row page-content">
         <div class="col-md-3">
             <div class="collection z-depth-2" id="status">
                 <a class="collection-item blue text-center"><h4 class="white-text">Estado</h4></a>
-                <a id="now_playing" class="collection-item" href="?query=now_playing">En Cartelera Hoy</a>
-                <a id="popular" class="collection-item" href="?query=popular">Populares</a>
+                <a id="on_the_air" class="collection-item" href="?query=on_the_air">En Emisión</a>
+                <a id="airing_today" class="collection-item" href="?query=airing_today">Se Emiten Hoy</a>
                 <a id="top_rated" class="collection-item" href="?query=top_rated">Mejor Valoradas</a>
-                <a id="upcoming" class="collection-item" href="?query=upcoming">Próximamente</a>
+                <a id="popular" class="collection-item" href="?query=popular">Populares</a>
             </div>
             <div class="collection z-depth-2" id="genres">
                 <a class="collection-item blue text-center"><h4 class="white-text">Géneros</h4></a>
@@ -25,17 +25,17 @@
             </div>
         </div>
         <div class="col-md-9">
-            {% for movie in movies %}
+            {% for tv in tv %}
             <div class="col-md-3">
                 <div class="card hoverable text-center" style="height:540px">
                     <div class="card-image">
-                        <img height="278" src="http://image.tmdb.org/t/p/w185/{{movie.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"/>
+                        <img height="278" src="http://image.tmdb.org/t/p/w185/{{tv.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';"/>
                     </div>
                     <div class="card-content" style="height:130px">
-                        <p><b>{{movie.title|truncatechars:40}}</b></p>
+                        <p><b>{{tv.name|truncatechars:40}}</b></p>
                     </div>
                     <div class="card-action text-center">
-                        <a href="{%url 'maxfilm:viewMovie' id=movie.id%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
+                        <a href="{%url 'maxfilm:viewTv' id=tv.id%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
                     </div>
                 </div>
             </div>

@@ -162,13 +162,16 @@ def Movies(request):
     movies = []
     num = ''
     page = ''
+    flag = True
+    result = True
+    action = ''
+
+    if 'page' in request.GET:
+        page = str(request.GET["page"])
+    else:
+        page = '1'
 
     if 'genre' in request.GET:
-        if 'page' in request.GET:
-            page = str(request.GET["page"])
-        else:
-            page = '1'
-
         num = str(request.GET["genre"])
         con = Request('http://api.themoviedb.org/3/genre/' + num +
                       '/movies?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
@@ -176,17 +179,18 @@ def Movies(request):
         movies = json.loads(urlopen(con).read())['results']
 
     if 'query' in request.GET:
-        pass
-
-    if 'genre' not in request.GET and 'query' not in request.GET:
-        if 'page' in request.GET:
-            page = str(request.GET["page"])
-        else:
-            page = '1'
-
-        con = Request('http://api.themoviedb.org/3/movie/popular?' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+        action = str(request.GET["query"])
+        con = Request('http://api.themoviedb.org/3/movie/' + action + '?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
         movies = json.loads(urlopen(con).read())['results']
+        if action == 'upcoming':
+            result = False
+
+    if 'genre' not in request.GET and 'query' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/movie/popular?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movies = json.loads(urlopen(con).read())['results']
+        flag = False
 
     con = Request('http://api.themoviedb.org/3/genre/movie/list?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                   headers=headers)
@@ -195,4 +199,69 @@ def Movies(request):
     return render(request, 'maxfilm/movies.html', {'genres': genres,
                                                    'movies': movies,
                                                    'genre': num,
+                                                   'page': page,
+                                                   'flag': flag,
+                                                   'result': result,
+                                                   'action': action})
+
+
+def Tv(request):
+    """Content of TV in general"""
+    tv = []
+    flag = True
+    page = ''
+    action = ''
+    num = ''
+
+    if 'page' in request.GET:
+        page = str(request.GET["page"])
+    else:
+        page = '1'
+
+    if 'genre' in request.GET:
+        num = str(request.GET["genre"])
+        con = Request('http://api.themoviedb.org/3/discover/tv?with_genres=' + num +
+                      '&page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())['results']
+
+    if 'query' in request.GET:
+        action = str(request.GET["query"])
+        con = Request('http://api.themoviedb.org/3/tv/' + action + '?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())['results']
+
+    if 'genre' not in request.GET and 'query' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/tv/popular?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())['results']
+        flag = False
+
+    con = Request('http://api.themoviedb.org/3/genre/tv/list?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    genres = json.loads(urlopen(con).read())['genres']
+
+    return render(request, 'maxfilm/tv.html', {'genres': genres,
+                                               'tv': tv,
+                                               'flag': flag,
+                                               'page': page,
+                                               'action': action,
+                                               'genre': num})
+
+
+def People(request):
+    """People who are actors or workers"""
+    people = []
+    page = ''
+
+    if 'page' in request.GET:
+        page = str(request.GET["page"])
+    else:
+        page = '1'
+
+    con = Request('http://api.themoviedb.org/3/person/popular?page=' + page + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    people = json.loads(urlopen(con).read())['results']
+
+    return render(request, 'maxfilm/people.html', {'people': people,
                                                    'page': page})
