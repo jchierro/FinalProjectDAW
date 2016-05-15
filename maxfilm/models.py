@@ -2,82 +2,80 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils import timezone
-# from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser
 
 
-class Usuarios(AbstractBaseUser):
-    """Class Usuarios. Bajo pruebas!!"""
-    # usuario = models.OneToOneField(settings.AUTH_USER_MODEL)
-    nombre_usuario = models.CharField(max_length=30, unique=True)
-    nombre = models.CharField(max_length=40)
-    apellidos = models.CharField(max_length=60)
-    fecha_nacimiento = models.DateField(blank=False, null=False)
-    email = models.EmailField()
-    avatar = models.ImageField(upload_to='imgPerfil', blank=False, null=False)
-
-    USERNAME_FIELD = 'nombre_usuario'
-    # REQUIRED_FIELDS = ['email']
-
-    def __str__(self):
-        return self.nombre_usuario
-
-    def __unicode__(self):
-        return self.nombre_usuario
-
-
-class Comentarios(models.Model):
-    """Class Comentarios"""
-    titulo = models.TextField(max_length=100)
-    mensaje = models.TextField(max_length=300)
-    fecha = models.DateTimeField(default=timezone.now)
-    id_contenidoAPI = models.IntegerField()
-    puntuacion = models.IntegerField()
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.titulo
-
-    def __unicode__(self):
-        return self.titulo
-
-
-class Acciones(models.Model):
-    """Class Acciones"""
-    id_contenidoAPI = models.IntegerField()
-    titulo = models.TextField(max_length=100)
-    img_contenido = models.CharField(max_length=400)
+class AccionPelicula(models.Model):
+    """Class AccionPelicula"""
+    id_MovieAPI = models.CharField(max_length=20)
+    titulo = models.CharField(max_length=60)
+    img_portada = models.CharField(max_length=300)
     pendiente = models.BooleanField()
     vista = models.BooleanField()
-    recomendar = models.BooleanField()
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    favorita = models.BooleanField()
+    id_usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Acciones Películas"
 
     def __str__(self):
-        return self.id_contenidoAPI
+        return self.id_MovieAPI
 
     def __unicode__(self):
-        return self.id_contenidoAPI
+        return self.id_MovieAPI
 
 
-class MensajesTablon(models.Model):
-    """Class MensajesTablon"""
-    mensaje = models.TextField(max_length=250)
-    fecha = models.DateTimeField(default=timezone.now)
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+class AccionSerie(models.Model):
+    """Class AccionSerie"""
+    id_SerieAPI = models.CharField(max_length=20)
+    titulo = models.CharField(max_length=60)
+    img_portada = models.CharField(max_length=300)
+    pendiente = models.BooleanField()
+    vista = models.BooleanField()
+    favorita = models.BooleanField()
+    id_usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Acciones Series"
 
     def __str__(self):
-        return self.fecha
+        return self.id_SerieAPI
 
     def __unicode__(self):
-        return self.fecha
+        return self.id_SerieAPI
 
 
-class Colecciones(models.Model):
+class AccionPersona(models.Model):
+    """Class AccionPersona"""
+    id_PersonAPI = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=60)
+    img_perfil = models.CharField(max_length=300)
+    favorita = models.BooleanField()
+    id_usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Acciones Personas"
+
+    def __str__(self):
+        return self.id_PersonAPI
+
+    def __unicode__(self):
+        return self.id_PersonAPI
+
+
+class Coleccion(models.Model):
     """Class Colecciones"""
-    nombre = models.CharField(max_length=35)
-    descripcion = models.TextField(max_length=100)
+    nombre = models.CharField(max_length=50)
+    descripcion = models.TextField(max_length=150)
     fecha_creacion = models.DateTimeField(default=timezone.now)
-    id_usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    coleccion_media = (
+        ('Películas', 'Películas'),
+        ('Series', 'Series')
+    )
+    media = models.CharField(max_length=10, choices=coleccion_media, default=0)
+    id_usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Colecciones"
 
     def __str__(self):
         return self.nombre
@@ -88,10 +86,13 @@ class Colecciones(models.Model):
 
 class ContenidoMultimedia(models.Model):
     "Class ContenidoMultimedia"
-    id_contenidoAPI = models.IntegerField()
-    titulo = models.CharField(max_length=40)
-    img_contenido = models.CharField(max_length=400)
-    id_coleccion = models.ForeignKey(Colecciones, on_delete=models.CASCADE)
+    id_contentAPI = models.CharField(max_length=20)
+    titulo = models.CharField(max_length=60)
+    img_portada = models.CharField(max_length=300)
+    id_coleccion = models.ForeignKey(Coleccion, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Contenidos Multimedia"
 
     def __str__(self):
         return self.titulo

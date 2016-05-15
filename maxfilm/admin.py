@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Usuarios, Colecciones, ContenidoMultimedia, Comentarios, \
-    MensajesTablon, Acciones
+from .models import Coleccion, ContenidoMultimedia, AccionPelicula, \
+    AccionSerie, AccionPersona
 
-admin.site.register(Usuarios)
-admin.site.register(Colecciones)
+
+admin.site.register(Coleccion)
 admin.site.register(ContenidoMultimedia)
-admin.site.register(Comentarios)
-admin.site.register(MensajesTablon)
-admin.site.register(Acciones)
+admin.site.register(AccionPelicula)
+admin.site.register(AccionSerie)
+admin.site.register(AccionPersona)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -18,5 +19,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('maxfilm.urls')),
+    url(r'^', include('maxfilm.urls', namespace='maxfilm')),
 ]
+
+admin.site.site_header = u'Administración de MaxFilm'
