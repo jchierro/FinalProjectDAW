@@ -1,0 +1,49 @@
+{% extends 'maxfilm/base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    {% if form.errors %}
+    <div class='alert alert-info text-center'>
+      <strong>{{form.errors}}</strong> 
+    </div>
+    {% endif %}
+    <div class="card">
+      <div class="card-header red white-text" style="padding: .75rem 1.25rem;">
+        Formulario de registro
+      </div>
+      <div class="card-block" style="padding: 1.25rem;">
+        <form action="." method="POST" role="form" class="form-inline">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+          </div>
+          <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+          </div>
+          <div class="form-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+          </div>
+          <div class="form-group">
+            {{ form.first_name.label_tag }}
+            {{ form.first_name }}
+          </div>
+          <div class="form-group">
+            {{ form.last_name.label_tag }}
+            {{ form.last_name }}
+          </div>
+          <br><br>
+          <div style="text-align:center;">
+            <button type="submit" class="btn btn-danger waves-effect waves-light">Registrarse</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

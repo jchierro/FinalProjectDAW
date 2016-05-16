@@ -15,6 +15,12 @@
   <link href="{% static 'css/slick.css' %}" rel="stylesheet">
   <link href="{% static 'css/datatables.min.css' %}" rel="stylesheet">
   <!--<link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>-->
+  <style type="text/css">
+  .form-group {
+    width: 29%;
+    margin-left: 80px;
+  }
+  </style>
 </head>
 <body>
   <nav class="navbar z-depth-2 red">
@@ -47,7 +53,7 @@
       <div class="row">
         <div class="col-md-3 col-md-offset-1">
           <p class="white-text center-on-small-only">COMENZAR</p>
-          <a href="#" class="btn btn-danger waves-effect waves-light">Regístrate!</a>
+          <a href="{%url 'maxfilm:signup'%}" class="btn btn-danger waves-effect waves-light">Regístrate!</a>
         </div>
         <hr class="hidden-lg hidden-md">
         <div class="col-md-2">
