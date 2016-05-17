@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 import json
 from urllib2 import Request, urlopen, HTTPError
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.template.context import RequestContext
@@ -21,9 +22,18 @@ def login(request):
 
     if user is not None and user.is_active:
         auth.login(request, user)
-        return render("/account/loggedin/")
+        request.session['login'] = user.first_name
+        return HttpResponseRedirect("/dashboard/")
     else:
-        return render("/account/invalid/")
+        request.session['login'] = 'error'
+        return HttpResponseRedirect('/')
+
+
+def logout(request):
+    del request.session['login']
+    auth.logout(request)
+
+    return HttpResponseRedirect('/')
 
 
 def signup(request):
@@ -54,6 +64,13 @@ def signup(request):
                               context_instance=RequestContext(request))
 
 
+@login_required
+def dashboard(request):
+    """Dashboard of the user"""
+
+    return render(request, 'maxfilm/dashboard.html', {})
+
+
 def index(request):
     """View index"""
 
@@ -73,7 +90,8 @@ def index(request):
         new['short_text'] = new['short_text'].replace("&#039;", "'")
 
     return render_to_response('maxfilm/index.html', {"slider": upComing,
-                                                     "news": news})
+                                                     "news": news},
+                              context_instance=RequestContext(request))
 
 
 def viewMovie(request, id):

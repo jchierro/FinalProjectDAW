@@ -1,0 +1,23 @@
+{% extends 'maxfilm/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Bienvenido, {{request.session.login}} !</h1>
+        </div>
+    </div>
+    <div class="row page-content">
+        <div class="col-md-3">
+            <div class="collection z-depth-2" id="status">
+                <a class="collection-item blue text-center"><h4 class="white-text">Mostrar</h4></a>
+                <a id="popular" class="collection-item" href="?query=popular">Populares</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+
+        </div>
+    </div>
+</div>
+{% endblock %}
