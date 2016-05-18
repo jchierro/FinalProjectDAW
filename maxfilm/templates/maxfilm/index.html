@@ -16,7 +16,12 @@
         <div class="card-panel">
           <div class="row">
             {% if user.is_authenticated %}
-            OK
+            <span id="avatar">{{user.username|slice:":1"}}</span>
+            <h5 class="text-center">{{user.username}}</h5>
+            <h6 class="text-center">Última conexión:</h6>
+            <h6 class="text-center">{{user.last_login}}</h6>
+            <hr>
+            <h6 class="text-center"><a href="/logout/"><i class="material-icons">exit_to_app</i> Desconectarse</a></h6>
             {% else %}
             <form class="col-md-12" method="post" action="{% url 'maxfilm:login' %}">
               <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'/>

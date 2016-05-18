@@ -3,20 +3,35 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="page-header">Bienvenido, {{request.session.login}} !</h1>
-        </div>
-    </div>
     <div class="row page-content">
         <div class="col-md-3">
-            <div class="collection z-depth-2" id="status">
-                <a class="collection-item blue text-center"><h4 class="white-text">Mostrar</h4></a>
-                <a id="popular" class="collection-item" href="?query=popular">Populares</a>
+            <div class="card-panel">
+                <span id="avatar" style="margin-left: 45px;">{{user.username|slice:":1"}}</span>
+                <h5 class="text-center">{{user.username}}</h5>
+                <h6 class="text-center">Última conexión:</h6>
+                <h6 class="text-center">{{user.last_login}}</h6>
+                <hr>
+                <h6 class="text-center"><a href="#"><i class="material-icons">perm_identity</i> Perfil</a></h6>
+                <hr>
+                <h6 class="text-center"><a href="#"><i class="material-icons">movie</i> Películas</a></h6>
+                <hr>
+                <h6 class="text-center"><a href="#"><i class="material-icons">tv</i> Series</a></h6>
+                <hr>
+                <h6 class="text-center"><a href="#"><i class="material-icons">person_pin</i> Personas</a></h6>
+                <hr>
+                <h6 class="text-center"><a href="/logout/"><i class="material-icons">exit_to_app</i> Desconectarse</a></h6>
             </div>
         </div>
         <div class="col-md-9">
-
+            <div class="well text-justify">
+                <h3 class="page-header">Noticias</h3>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </div>
         </div>
     </div>
 </div>
