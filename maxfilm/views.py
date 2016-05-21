@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.template.context import RequestContext
 from django.contrib import auth
+from django.contrib.auth.hashers import make_password
 
 headers = {
     'Accept': 'application/json',
@@ -68,7 +69,25 @@ def signup(request):
 def dashboard(request):
     """Dashboard of the user"""
 
-    return render(request, 'maxfilm/dashboard.html', {})
+    if request.method == 'POST':
+        aux = User.objects.get(username=request.user.username)
+        aux.password = make_password(request.POST['password'])
+        aux.email = request.POST['email']
+        aux.first_name = request.POST['first_name']
+        aux.last_name = request.POST['last_name']
+        aux.save()
+
+        return render(request, 'maxfilm/dashboard.html', {'profile': True,
+                                                          'auxUser': aux,
+                                                          'alert': True})
+
+    if 'profile' in request.GET:
+        aux = User.objects.get(username=request.user.username)
+
+        return render(request, 'maxfilm/dashboard.html', {'profile': True,
+                                                          'auxUser': aux})
+
+    return render(request, 'maxfilm/dashboard.html', {'default': True})
 
 
 def index(request):

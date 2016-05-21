@@ -11,7 +11,7 @@
                 <h6 class="text-center">Última conexión:</h6>
                 <h6 class="text-center">{{user.last_login}}</h6>
                 <hr>
-                <h6 class="text-center"><a href="#"><i class="material-icons">perm_identity</i> Perfil</a></h6>
+                <h6 class="text-center"><a href="?profile"><i class="material-icons">perm_identity</i> Perfil</a></h6>
                 <hr>
                 <h6 class="text-center"><a href="#"><i class="material-icons">movie</i> Películas</a></h6>
                 <hr>
@@ -23,6 +23,7 @@
             </div>
         </div>
         <div class="col-md-9">
+            {% if default %}
             <div class="well text-justify">
                 <h3 class="page-header">Noticias</h3>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -32,7 +33,50 @@
                 cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
                 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
             </div>
+            {% endif %}
+            {% if profile %}
+            {% if alert %}
+            <div class='alert alert-info text-center'>
+                <strong>Enhorabuena!</strong> 
+                Los datos han sido actualizados correctamente.
+            </div>
+            {% endif %}
+            <div class="card">
+              <div class="card-header red white-text" style="padding: .75rem 1.25rem;">
+                Editar perfil
+            </div>
+            <div class="card-block" style="padding: 1.25rem;">
+                <form action="" method="POST" role="form" class="form-inline">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="icon_prefix">Usuario</label>
+                    <input id="icon_prefix" type="text" class="validate" name="username" id="username" disabled value="{{user.username}}">
+                </div>
+                <div class="form-group">
+                    <label for="icon_prefix">Contraseña</label>
+                    <input id="icon_prefix" type="password" class="validate" name="password" id="password" value="{{auxUser.password}}">
+                </div>
+                <div class="form-group">
+                    <label for="icon_prefix">Email</label>
+                    <input id="icon_prefix" type="email" class="validate" name="email" id="email" value="{{auxUser.email}}">
+                </div>
+                <div class="form-group">
+                    <label for="icon_prefix">Nombre</label>
+                    <input id="icon_prefix" type="text" class="validate" name="first_name" id="first_name" value="{{auxUser.first_name}}">
+                </div>
+                <div class="form-group">
+                    <label for="icon_prefix">Apellidos</label>
+                    <input id="icon_prefix" type="text" class="validate" name="last_name" id="last_name" value="{{auxUser.last_name}}">
+                </div>
+                <br><br>
+                <div style="text-align:center;">
+                    <button type="submit" class="btn btn-danger waves-effect waves-light">Actualizar Datos</button>
+                </div>
+            </form>
         </div>
     </div>
+    {% endif %}
+</div>
+</div>
 </div>
 {% endblock %}
