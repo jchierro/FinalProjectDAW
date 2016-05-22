@@ -48,6 +48,9 @@
           <li><a href="{%url 'maxfilm:Movies'%}" class="waves-effect waves-light">Películas <span class="sr-only">(current)</span></a></li>
           <li><a href="{%url 'maxfilm:Tv'%}" class="waves-effect waves-light">Series <span class="sr-only">(current)</span></a></li>
           <li><a href="{%url 'maxfilm:People'%}" class="waves-effect waves-light">Personas <span class="sr-only">(current)</span></a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{%url 'maxfilm:dashboard'%}" class="waves-effect waves-light">Perfil: {{user.username}} <span class="sr-only">(current)</span></a></li>
+          {% endif %}
         </ul>
         <form class="navbar-form navbar-right waves-effect waves-light" role="search" action="/search">
           <div class="form-group">

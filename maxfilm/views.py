@@ -89,13 +89,31 @@ def dashboard(request):
         return render(request, 'maxfilm/dashboard.html', {'profile': True,
                                                           'auxUser': aux})
 
+    if 'movies' in request.GET:
+        bookmarks = AccionPelicula.objects.filter(id_usuario=request.user).filter(favorita=True)
+
+        return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
+                                                          'movies': True})
+
+    if 'tv' in request.GET:
+        bookmarks = AccionSerie.objects.filter(id_usuario=request.user).filter(favorita=True)
+
+        return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
+                                                          'tv': True})
+
+    if 'people' in request.GET:
+        bookmarks = AccionPersona.objects.filter(id_usuario=request.user).filter(favorita=True)
+
+        return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
+                                                          'people': True})
+
     return render(request, 'maxfilm/dashboard.html', {'default': True})
 
 
 def bookmark(request):
     """Bookmark"""
 
-    if 'movie' in request.GET:
+    if 'movie' in request.GET and 'delete' not in request.GET:
         con = Request('http://api.themoviedb.org/3/movie/' + request.GET['id'] +
                       '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
@@ -112,7 +130,12 @@ def bookmark(request):
 
         return redirect('/movie/' + request.GET['id'])
 
-    if 'tv' in request.GET:
+    if 'movie' in request.GET and 'delete' in request.GET:
+        AccionPelicula.objects.get(id=request.GET['id']).delete()
+
+        return redirect('/dashboard?movies')
+
+    if 'tv' in request.GET and 'delete' not in request.GET:
         con = Request('http://api.themoviedb.org/3/tv/' + request.GET['id'] +
                       '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
@@ -129,7 +152,12 @@ def bookmark(request):
 
         return redirect('/tv/' + request.GET['id'])
 
-    if 'person' in request.GET:
+    if 'tv' in request.GET and 'delete' in request.GET:
+        AccionSerie.objects.get(id=request.GET['id']).delete()
+
+        return redirect('/dashboard?tv')
+
+    if 'person' in request.GET and 'delete' not in request.GET:
         con = Request('http://api.themoviedb.org/3/person/' + request.GET['id'] +
                       '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
@@ -143,6 +171,11 @@ def bookmark(request):
         aux.save()
 
         return redirect('/person/' + request.GET['id'])
+
+    if 'person' in request.GET and 'delete' in request.GET:
+        AccionPersona.objects.get(id=request.GET['id']).delete()
+
+        return redirect('/dashboard?people')
 
     return redirect('/')
 
