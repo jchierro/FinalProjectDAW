@@ -14,11 +14,15 @@
         <div class="card-panel">
           <div class="row text-center">
             <img class="center-block" src="http://image.tmdb.org/t/p/w185/{{tv.poster_path}}" onerror="this.src='{% static 'img/default.png' %}';">
+            {% if user.is_authenticated %}
             <br>
             <p><b>Marcar como:</b></p>
-            <a class="btn btn-info waves-effect waves-light">Recomendada</a>
+            {% if bookmark == False %}
+            <a href="/bookmark?tv&id={{tv.id}}" class="btn btn-info waves-effect waves-light">Favorita</a>
+            {% endif %}
             <a class="btn btn-success waves-effect waves-light">Vista</a>
             <a class="btn btn-warning waves-effect waves-light">Pendiente</a>
+            {% endif %}
           </div>
         </div>
         <br>

@@ -13,6 +13,11 @@
         <div class="card-panel">
           <div class="row text-center">
             <img class="center-block" src="http://image.tmdb.org/t/p/w185/{{person.profile_path}}" onerror="this.src='{% static 'img/noprofile.jpg' %}';"/>
+            {% if user.is_authenticated and bookmark = False%}
+            <br>
+            <p><b>Marcar como:</b></p>
+            <a href="/bookmark?person&id={{person.id}}" class="btn btn-info waves-effect waves-light">Favorit@</a>
+            {% endif %}
           </div>
         </div>
         <br>

@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^login/$', views.login, name="login"),
     url(r'^logout/$', views.logout, name="logout"),
     url(r'^dashboard/$', views.dashboard, name="dashboard"),
+    url(r'^bookmark/$', views.bookmark, name="bookmark"),
     url(r'^$', views.index, name="index"),
     url(r'^movie/(?P<id>[0-9]+)/$', views.viewMovie, name="viewMovie"),
     url(r'^tv/(?P<id>[0-9]+)/$', views.viewTv, name="viewTv"),

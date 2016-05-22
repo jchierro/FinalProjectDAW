@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, redirect
 from forms import SignUpForm
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 import json
@@ -10,6 +10,7 @@ from django.http.response import HttpResponseRedirect
 from django.template.context import RequestContext
 from django.contrib import auth
 from django.contrib.auth.hashers import make_password
+from models import AccionPelicula, AccionSerie, AccionPersona
 
 headers = {
     'Accept': 'application/json',
@@ -71,7 +72,8 @@ def dashboard(request):
 
     if request.method == 'POST':
         aux = User.objects.get(username=request.user.username)
-        aux.password = make_password(request.POST['password'])
+        if request.POST['password'] != '':
+            aux.password = make_password(request.POST['password'])
         aux.email = request.POST['email']
         aux.first_name = request.POST['first_name']
         aux.last_name = request.POST['last_name']
@@ -88,6 +90,61 @@ def dashboard(request):
                                                           'auxUser': aux})
 
     return render(request, 'maxfilm/dashboard.html', {'default': True})
+
+
+def bookmark(request):
+    """Bookmark"""
+
+    if 'movie' in request.GET:
+        con = Request('http://api.themoviedb.org/3/movie/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movie = json.loads(urlopen(con).read())
+        aux = AccionPelicula()
+        aux.id_MovieAPI = movie['id']
+        aux.titulo = movie['title']
+        aux.img_portada = movie['poster_path']
+        aux.pendiente = False
+        aux.vista = False
+        aux.favorita = True
+        aux.id_usuario = request.user
+        aux.save()
+
+        return redirect('/movie/' + request.GET['id'])
+
+    if 'tv' in request.GET:
+        con = Request('http://api.themoviedb.org/3/tv/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())
+        aux = AccionSerie()
+        aux.id_SerieAPI = tv['id']
+        aux.titulo = tv['name']
+        aux.img_portada = tv['poster_path']
+        aux.pendiente = False
+        aux.vista = False
+        aux.favorita = True
+        aux.id_usuario = request.user
+        aux.save()
+
+        return redirect('/tv/' + request.GET['id'])
+
+    if 'person' in request.GET:
+        con = Request('http://api.themoviedb.org/3/person/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        person = json.loads(urlopen(con).read())
+        aux = AccionPersona()
+        aux.id_PersonAPI = person['id']
+        aux.nombre = person['name']
+        aux.img_perfil = person['profile_path']
+        aux.favorita = True
+        aux.id_usuario = request.user
+        aux.save()
+
+        return redirect('/person/' + request.GET['id'])
+
+    return redirect('/')
 
 
 def index(request):
@@ -135,10 +192,19 @@ def viewMovie(request, id):
                   headers=headers)
     similar = json.loads(urlopen(con).read())['results'][:6]
 
+    try:
+        aux = AccionPelicula.objects.filter(id_usuario=request.user).get(id_MovieAPI=id)
+
+        if aux.favorita:
+            bookmark = True
+    except AccionPelicula.DoesNotExist:
+        bookmark = False
+
     return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
                                                       'credits': credits,
                                                       'videos': videos,
-                                                      'similar': similar})
+                                                      'similar': similar,
+                                                      'bookmark': bookmark})
 
 
 def viewTv(request, id):
@@ -177,11 +243,20 @@ def viewTv(request, id):
     except HTTPError:
         pass
 
+    try:
+        aux = AccionSerie.objects.filter(id_usuario=request.user).get(id_SerieAPI=id)
+
+        if aux.favorita:
+            bookmark = True
+    except AccionSerie.DoesNotExist:
+        bookmark = False
+
     return render(request, 'maxfilm/viewTv.html', {'tv': tv,
                                                    'credits': credits,
                                                    'similar': similar,
                                                    'videos': videos,
-                                                   'seasons': seasons})
+                                                   'seasons': seasons,
+                                                   'bookmark': bookmark})
 
 
 def viewPerson(request, id):
@@ -205,9 +280,18 @@ def viewPerson(request, id):
                   headers=headers)
     credits = json.loads(urlopen(con).read())
 
+    try:
+        aux = AccionPersona.objects.filter(id_usuario=request.user).get(id_PersonAPI=id)
+
+        if aux.favorita:
+            bookmark = True
+    except AccionPersona.DoesNotExist:
+        bookmark = False
+
     return render(request, 'maxfilm/viewPerson.html', {'person': person,
                                                        'images': images,
-                                                       'credits': credits})
+                                                       'credits': credits,
+                                                       'bookmark': bookmark})
 
 
 def Search(request):
