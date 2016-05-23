@@ -18,6 +18,8 @@ headers = {
 
 
 def login(request):
+    """Login"""
+
     username = request.POST['username']
     password = request.POST['password']
     user = auth.authenticate(username=username, password=password)
@@ -32,6 +34,8 @@ def login(request):
 
 
 def logout(request):
+    """Logout"""
+
     del request.session['login']
     auth.logout(request)
 
@@ -39,6 +43,8 @@ def logout(request):
 
 
 def signup(request):
+    """Signup"""
+
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
