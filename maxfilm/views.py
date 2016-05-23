@@ -118,20 +118,30 @@ def bookmark(request):
                       '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
         movie = json.loads(urlopen(con).read())
-        aux = AccionPelicula()
-        aux.id_MovieAPI = movie['id']
-        aux.titulo = movie['title']
-        aux.img_portada = movie['poster_path']
-        aux.pendiente = False
-        aux.vista = False
-        aux.favorita = True
-        aux.id_usuario = request.user
-        aux.save()
+
+        try:
+            aux = AccionPelicula.objects.filter(id_usuario=request.user.id).get(id_MovieAPI=request.GET['id'])
+            aux.favorita = True
+        except AccionPelicula.DoesNotExist:
+            aux = AccionPelicula()
+            aux.id_MovieAPI = movie['id']
+            aux.titulo = movie['title']
+            aux.img_portada = movie['poster_path']
+            aux.pendiente = False
+            aux.vista = False
+            aux.favorita = True
+            aux.id_usuario = request.user
+            aux.save()
 
         return redirect('/movie/' + request.GET['id'])
 
     if 'movie' in request.GET and 'delete' in request.GET:
-        AccionPelicula.objects.get(id=request.GET['id']).delete()
+        aux = AccionPelicula.objects.get(id=request.GET['id'])
+
+        if aux.vista is False and aux.pendiente is False:
+            aux.delete()
+        else:
+            aux.favorita = False
 
         return redirect('/dashboard?movies')
 
@@ -140,20 +150,30 @@ def bookmark(request):
                       '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
                       headers=headers)
         tv = json.loads(urlopen(con).read())
-        aux = AccionSerie()
-        aux.id_SerieAPI = tv['id']
-        aux.titulo = tv['name']
-        aux.img_portada = tv['poster_path']
-        aux.pendiente = False
-        aux.vista = False
-        aux.favorita = True
-        aux.id_usuario = request.user
-        aux.save()
+
+        try:
+            aux = AccionSerie.objects.filter(id_usuario=request.user.id).get(id_SerieAPI=request.GET['id'])
+            aux.favorita = True
+        except AccionSerie.DoesNotExist:
+            aux = AccionSerie()
+            aux.id_SerieAPI = tv['id']
+            aux.titulo = tv['name']
+            aux.img_portada = tv['poster_path']
+            aux.pendiente = False
+            aux.vista = False
+            aux.favorita = True
+            aux.id_usuario = request.user
+            aux.save()
 
         return redirect('/tv/' + request.GET['id'])
 
     if 'tv' in request.GET and 'delete' in request.GET:
-        AccionSerie.objects.get(id=request.GET['id']).delete()
+        aux = AccionSerie.objects.get(id=request.GET['id'])
+
+        if aux.vista is False and aux.pendiente is False:
+            aux.delete()
+        else:
+            aux.favorita = False
 
         return redirect('/dashboard?tv')
 
@@ -226,7 +246,7 @@ def viewMovie(request, id):
     similar = json.loads(urlopen(con).read())['results'][:6]
 
     try:
-        aux = AccionPelicula.objects.filter(id_usuario=request.user).get(id_MovieAPI=id)
+        aux = AccionPelicula.objects.filter(id_usuario=request.user.id).get(id_MovieAPI=id)
 
         if aux.favorita:
             bookmark = True
@@ -277,7 +297,7 @@ def viewTv(request, id):
         pass
 
     try:
-        aux = AccionSerie.objects.filter(id_usuario=request.user).get(id_SerieAPI=id)
+        aux = AccionSerie.objects.filter(id_usuario=request.user.id).get(id_SerieAPI=id)
 
         if aux.favorita:
             bookmark = True
@@ -314,7 +334,7 @@ def viewPerson(request, id):
     credits = json.loads(urlopen(con).read())
 
     try:
-        aux = AccionPersona.objects.filter(id_usuario=request.user).get(id_PersonAPI=id)
+        aux = AccionPersona.objects.filter(id_usuario=request.user.id).get(id_PersonAPI=id)
 
         if aux.favorita:
             bookmark = True
