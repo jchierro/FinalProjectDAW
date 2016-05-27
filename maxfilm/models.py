@@ -18,10 +18,10 @@ class AccionPelicula(models.Model):
         verbose_name_plural = "Acciones Películas"
 
     def __str__(self):
-        return self.id_MovieAPI
+        return "ID API: " + self.id_MovieAPI
 
     def __unicode__(self):
-        return self.id_MovieAPI
+        return "ID API: " + self.id_MovieAPI
 
 
 class AccionSerie(models.Model):
@@ -38,10 +38,10 @@ class AccionSerie(models.Model):
         verbose_name_plural = "Acciones Series"
 
     def __str__(self):
-        return self.id_SerieAPI
+        return "ID API: " + self.id_SerieAPI
 
     def __unicode__(self):
-        return self.id_SerieAPI
+        return "ID API: " + self.id_SerieAPI
 
 
 class AccionPersona(models.Model):
@@ -56,10 +56,10 @@ class AccionPersona(models.Model):
         verbose_name_plural = "Acciones Personas"
 
     def __str__(self):
-        return self.id_PersonAPI
+        return "ID API: " + self.id_PersonAPI
 
     def __unicode__(self):
-        return self.id_PersonAPI
+        return "ID API: " + self.id_PersonAPI
 
 
 class Coleccion(models.Model):

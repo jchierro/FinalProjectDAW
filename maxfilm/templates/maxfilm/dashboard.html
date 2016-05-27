@@ -106,8 +106,52 @@
           {% endif %}
           {% endfor %}
         </div>
-        <div id="pending" class="tab-pane fade"></div>
-        <div id="viewed" class="tab-pane fade"></div>
+        <div id="pending" class="tab-pane fade">
+          {% for pending in pending %}
+          <div class="col-md-3">
+            <div class="card hoverable text-center" style="height:560px">
+              <div class="card-image">
+                <img height="278" src="http://image.tmdb.org/t/p/w185/{{pending.img_portada}}" onerror="this.src='{% static 'img/default.png' %}';"/>
+              </div>
+              <div class="card-content" style="height:130px">
+                <p><b>{{pending.titulo|truncatechars:40}}</b></p>
+              </div>
+              <div class="card-action">
+                <a href="{%url 'maxfilm:viewMovie' id=pending.id_MovieAPI%}" class="btn btn-default waves-effect waves-light">Mostrar</a>
+                <a href="/pending?movie&delete&id={{pending.id}}" class="btn red waves-effect waves-light">Borrar</a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.first %}
+          <script type="text/javascript" style="display: none;">
+          document.getElementById('badgePending').innerHTML = {{forloop.revcounter}};
+          </script>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div id="viewed" class="tab-pane fade">
+          {% for viewed in viewed %}
+          <div class="col-md-3">
+            <div class="card hoverable text-center" style="height:560px">
+              <div class="card-image">
+                <img height="278" src="http://image.tmdb.org/t/p/w185/{{viewed.img_portada}}" onerror="this.src='{% static 'img/default.png' %}';"/>
+              </div>
+              <div class="card-content" style="height:130px">
+                <p><b>{{viewed.titulo|truncatechars:40}}</b></p>
+              </div>
+              <div class="card-action">
+                <a href="{%url 'maxfilm:viewMovie' id=viewed.id_MovieAPI%}" class="btn btn-default waves-effect waves-light">Mostrar</a>
+                <a href="/viewed?movie&delete&id={{viewed.id}}" class="btn red waves-effect waves-light">Borrar</a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.first %}
+          <script type="text/javascript" style="display: none;">
+          document.getElementById('badgeViewed').innerHTML = {{forloop.revcounter}};
+          </script>
+          {% endif %}
+          {% endfor %}
+        </div>
       </div>
       {% endif %}
       {% if tv %}
@@ -140,8 +184,52 @@
           {% endif %}
           {% endfor %}
         </div>
-        <div id="pending" class="tab-pane fade"></div>
-        <div id="viewed" class="tab-pane fade"></div>
+        <div id="pending" class="tab-pane fade">
+          {% for pending in pending %}
+          <div class="col-md-3">
+            <div class="card hoverable text-center" style="height:560px">
+              <div class="card-image">
+                <img height="278" src="http://image.tmdb.org/t/p/w185/{{pending.img_portada}}" onerror="this.src='{% static 'img/default.png' %}';"/>
+              </div>
+              <div class="card-content" style="height:130px">
+                <p><b>{{pending.titulo|truncatechars:40}}</b></p>
+              </div>
+              <div class="card-action text-center">
+                <a href="{%url 'maxfilm:viewTv' id=pending.id_SerieAPI%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
+                <a href="/pending?tv&delete&id={{pending.id}}" class="btn red waves-effect waves-light">Borrar</a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.first %}
+          <script type="text/javascript" style="display: none;">
+          document.getElementById('badgePending').innerHTML = {{forloop.revcounter}};
+          </script>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <div id="viewed" class="tab-pane fade">
+          {% for viewed in viewed %}
+          <div class="col-md-3">
+            <div class="card hoverable text-center" style="height:560px">
+              <div class="card-image">
+                <img height="278" src="http://image.tmdb.org/t/p/w185/{{viewed.img_portada}}" onerror="this.src='{% static 'img/default.png' %}';"/>
+              </div>
+              <div class="card-content" style="height:130px">
+                <p><b>{{viewed.titulo|truncatechars:40}}</b></p>
+              </div>
+              <div class="card-action text-center">
+                <a href="{%url 'maxfilm:viewTv' id=viewed.id_SerieAPI%}" class="btn btn-default waves-effect waves-light center-block">Mostrar</a>
+                <a href="/viewed?tv&delete&id={{viewed.id}}" class="btn red waves-effect waves-light">Borrar</a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.first %}
+          <script type="text/javascript" style="display: none;">
+          document.getElementById('badgeViewed').innerHTML = {{forloop.revcounter}};
+          </script>
+          {% endif %}
+          {% endfor %}
+        </div>
       </div>
       {% endif %}
       {% if people %}

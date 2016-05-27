@@ -97,14 +97,22 @@ def dashboard(request):
 
     if 'movies' in request.GET:
         bookmarks = AccionPelicula.objects.filter(id_usuario=request.user).filter(favorita=True)
+        pending = AccionPelicula.objects.filter(id_usuario=request.user).filter(pendiente=True)
+        viewed = AccionPelicula.objects.filter(id_usuario=request.user).filter(vista=True)
 
         return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
+                                                          'pending': pending,
+                                                          'viewed': viewed,
                                                           'movies': True})
 
     if 'tv' in request.GET:
         bookmarks = AccionSerie.objects.filter(id_usuario=request.user).filter(favorita=True)
+        pending = AccionSerie.objects.filter(id_usuario=request.user).filter(pendiente=True)
+        viewed = AccionSerie.objects.filter(id_usuario=request.user).filter(vista=True)
 
         return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
+                                                          'pending': pending,
+                                                          'viewed': viewed,
                                                           'tv': True})
 
     if 'people' in request.GET:
@@ -114,6 +122,154 @@ def dashboard(request):
                                                           'people': True})
 
     return render(request, 'maxfilm/dashboard.html', {'default': True})
+
+
+def viewed(request):
+    """Viewed"""
+
+    if 'movie' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/movie/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movie = json.loads(urlopen(con).read())
+
+        try:
+            aux = AccionPelicula.objects.filter(id_usuario=request.user.id).get(id_MovieAPI=request.GET['id'])
+            aux.pendiente = False
+            aux.vista = True
+            aux.save()
+        except AccionPelicula.DoesNotExist:
+            aux = AccionPelicula()
+            aux.id_MovieAPI = movie['id']
+            aux.titulo = movie['title']
+            aux.img_portada = movie['poster_path']
+            aux.pendiente = False
+            aux.vista = True
+            aux.favorita = False
+            aux.id_usuario = request.user
+            aux.save()
+
+        return redirect('/movie/' + request.GET['id'])
+
+    if 'movie' in request.GET and 'delete' in request.GET:
+        aux = AccionPelicula.objects.get(id=request.GET['id'])
+
+        if aux.pendiente is False and aux.favorita is False:
+            aux.delete()
+        else:
+            aux.vista = False
+            aux.save()
+
+        return redirect('/dashboard?movies')
+
+    if 'tv' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/tv/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())
+
+        try:
+            aux = AccionSerie.objects.filter(id_usuario=request.user.id).get(id_SerieAPI=request.GET['id'])
+            aux.pendiente = False
+            aux.vista = True
+            aux.save()
+        except AccionSerie.DoesNotExist:
+            aux = AccionSerie()
+            aux.id_SerieAPI = tv['id']
+            aux.titulo = tv['name']
+            aux.img_portada = tv['poster_path']
+            aux.pendiente = False
+            aux.vista = True
+            aux.favorita = False
+            aux.id_usuario = request.user
+            aux.save()
+
+        return redirect('/tv/' + request.GET['id'])
+
+    if 'tv' in request.GET and 'delete' in request.GET:
+        aux = AccionSerie.objects.get(id=request.GET['id'])
+
+        if aux.pendiente is False and aux.favorita is False:
+            aux.delete()
+        else:
+            aux.vista = False
+            aux.save()
+
+        return redirect('/dashboard?tv')
+
+
+def pending(request):
+    """Pending"""
+
+    if 'movie' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/movie/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movie = json.loads(urlopen(con).read())
+
+        try:
+            aux = AccionPelicula.objects.filter(id_usuario=request.user.id).get(id_MovieAPI=request.GET['id'])
+            aux.pendiente = True
+            aux.vista = False
+            aux.save()
+        except AccionPelicula.DoesNotExist:
+            aux = AccionPelicula()
+            aux.id_MovieAPI = movie['id']
+            aux.titulo = movie['title']
+            aux.img_portada = movie['poster_path']
+            aux.pendiente = True
+            aux.vista = False
+            aux.favorita = False
+            aux.id_usuario = request.user
+            aux.save()
+
+        return redirect('/movie/' + request.GET['id'])
+
+    if 'movie' in request.GET and 'delete' in request.GET:
+        aux = AccionPelicula.objects.get(id=request.GET['id'])
+
+        if aux.vista is False and aux.favorita is False:
+            aux.delete()
+        else:
+            aux.pendiente = False
+            aux.save()
+
+        return redirect('/dashboard?movies')
+
+    if 'tv' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/tv/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())
+
+        try:
+            aux = AccionSerie.objects.filter(id_usuario=request.user.id).get(id_SerieAPI=request.GET['id'])
+            aux.pendiente = True
+            aux.vista = False
+            aux.save()
+        except AccionSerie.DoesNotExist:
+            aux = AccionSerie()
+            aux.id_SerieAPI = tv['id']
+            aux.titulo = tv['name']
+            aux.img_portada = tv['poster_path']
+            aux.pendiente = True
+            aux.vista = False
+            aux.favorita = False
+            aux.id_usuario = request.user
+            aux.save()
+
+        return redirect('/tv/' + request.GET['id'])
+
+    if 'tv' in request.GET and 'delete' in request.GET:
+        aux = AccionSerie.objects.get(id=request.GET['id'])
+
+        if aux.vista is False and aux.favorita is False:
+            aux.delete()
+        else:
+            aux.pendiente = False
+            aux.save()
+
+        return redirect('/dashboard?tv')
 
 
 def bookmark(request):
@@ -128,6 +284,7 @@ def bookmark(request):
         try:
             aux = AccionPelicula.objects.filter(id_usuario=request.user.id).get(id_MovieAPI=request.GET['id'])
             aux.favorita = True
+            aux.save()
         except AccionPelicula.DoesNotExist:
             aux = AccionPelicula()
             aux.id_MovieAPI = movie['id']
@@ -148,6 +305,7 @@ def bookmark(request):
             aux.delete()
         else:
             aux.favorita = False
+            aux.save()
 
         return redirect('/dashboard?movies')
 
@@ -160,6 +318,7 @@ def bookmark(request):
         try:
             aux = AccionSerie.objects.filter(id_usuario=request.user.id).get(id_SerieAPI=request.GET['id'])
             aux.favorita = True
+            aux.save()
         except AccionSerie.DoesNotExist:
             aux = AccionSerie()
             aux.id_SerieAPI = tv['id']
@@ -180,6 +339,7 @@ def bookmark(request):
             aux.delete()
         else:
             aux.favorita = False
+            aux.save()
 
         return redirect('/dashboard?tv')
 
@@ -256,14 +416,23 @@ def viewMovie(request, id):
 
         if aux.favorita:
             bookmark = True
+        else:
+            bookmark = False
+
+        if aux.pendiente or aux.vista:
+            viewing = True
+        else:
+            viewing = False
     except AccionPelicula.DoesNotExist:
         bookmark = False
+        viewing = False
 
     return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
                                                       'credits': credits,
                                                       'videos': videos,
                                                       'similar': similar,
-                                                      'bookmark': bookmark})
+                                                      'bookmark': bookmark,
+                                                      'viewing': viewing})
 
 
 def viewTv(request, id):
@@ -307,15 +476,24 @@ def viewTv(request, id):
 
         if aux.favorita:
             bookmark = True
+        else:
+            bookmark = False
+
+        if aux.vista or aux.pendiente:
+            viewing = True
+        else:
+            viewing = False
     except AccionSerie.DoesNotExist:
         bookmark = False
+        viewing = False
 
     return render(request, 'maxfilm/viewTv.html', {'tv': tv,
                                                    'credits': credits,
                                                    'similar': similar,
                                                    'videos': videos,
                                                    'seasons': seasons,
-                                                   'bookmark': bookmark})
+                                                   'bookmark': bookmark,
+                                                   'viewing': viewing})
 
 
 def viewPerson(request, id):
