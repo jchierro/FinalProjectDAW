@@ -34,6 +34,21 @@
     text-transform: uppercase;
     margin-left: 60px;
   }
+
+  .donut {
+    width:100%;
+    height:150px;
+    min-width:150px;
+  }
+
+  .donut-label {
+    position:absolute;
+    left:45%;
+    font-size:22pt;
+    color:#ddd;
+    width:100%;
+    top:38%;
+  }
   </style>
 </head>
 <body>
@@ -105,6 +120,17 @@
   <script type="text/javascript" src="{% static 'js/datatables.min.js' %}"></script>
   <script type="text/javascript">
   $(document).ready(function () {
+    $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
+      $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js',function(){
+        $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.resize.min.js',function(){
+          $.plot("#chart1",[{data:50,color:'#F44336'},{data:50,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart2",[{data:10,color:'#33B5E5'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart3",[{data:10,color:'#00C853'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart4",[{data:10,color:'#FF8800'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+        });
+      });
+    });
+
     $('.autoplay').slick({
       infinite: true,
       speed: 500,
@@ -143,6 +169,6 @@
     });
     {% endif %}
   });
-  </script>
+</script>
 </body>
 </html>

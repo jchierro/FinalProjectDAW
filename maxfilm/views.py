@@ -78,7 +78,7 @@ def signup(request):
 def dashboard(request):
     """Dashboard of the user"""
 
-    if request.method == 'POST' and 'collections' not in request.GET:
+    if request.method == 'POST' and 'collections' not in request.GET and 'updateCollection' not in request.GET:
         aux = User.objects.get(username=request.user.username)
         if request.POST['password'] != '':
             aux.password = make_password(request.POST['password'])
@@ -122,6 +122,38 @@ def dashboard(request):
 
         return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
                                                           'people': True})
+
+    if 'deleteCollection' in request.GET:
+        Coleccion.objects.get(id=request.GET['id']).delete()
+
+        return redirect('/dashboard?collections')
+
+    if 'updateCollection' in request.GET:
+        aux = Coleccion.objects.get(id=request.GET['id'])
+
+        if request.method == 'POST':
+            aux.nombre = request.POST['nombre']
+            aux.descripcion = request.POST['descripcion']
+            aux.save()
+
+            return HttpResponseRedirect('/dashboard/?collections')
+
+        return render(request, 'maxfilm/dashboard.html', {'collection': aux,
+                                                          'editCollection': True})
+
+    if 'delete' in request.GET:
+        ContenidoMultimedia.objects.filter(id=request.GET['id']).delete()
+
+        return redirect('/dashboard?collections')
+
+    if 'viewC' in request.GET:
+        aux = Coleccion.objects.get(id=request.GET['id'])
+        collection = ContenidoMultimedia.objects.filter(id_coleccion=aux)
+
+        return render(request, 'maxfilm/dashboard.html', {'collection': collection,
+                                                          'viewCollection': True,
+                                                          'media': aux.media,
+                                                          'nombre': aux.nombre})
 
     if 'collections' in request.GET:
         collectionsMovies = Coleccion.objects.filter(id_usuario=request.user).filter(media='Películas')
@@ -493,7 +525,7 @@ def viewMovie(request, id):
         bookmark = False
         viewing = False
 
-    collections = Coleccion.objects.filter(id_usuario=request.user).filter(media='Películas')
+    collections = Coleccion.objects.filter(id_usuario=request.user.id).filter(media='Películas')
 
     return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
                                                       'credits': credits,
@@ -556,7 +588,7 @@ def viewTv(request, id):
         bookmark = False
         viewing = False
 
-    collections = Coleccion.objects.filter(id_usuario=request.user).filter(media='Series')
+    collections = Coleccion.objects.filter(id_usuario=request.user.id).filter(media='Series')
 
     return render(request, 'maxfilm/viewTv.html', {'tv': tv,
                                                    'credits': credits,
