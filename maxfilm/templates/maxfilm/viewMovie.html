@@ -24,6 +24,23 @@
             <a href="/viewed?movie&id={{movie.id}}" class="btn btn-success waves-effect waves-light">Vista</a>
             <a href="/pending?movie&id={{movie.id}}" class="btn btn-warning waves-effect waves-light">Pendiente</a>
             {% endif %}
+            <br><br>
+            <p><b>Agregar a colección:</b></p>
+            <div class="col-md-12">
+              <form action="/add" method="GET">
+                <input type="hidden" name="movie" value="">
+                <input type="hidden" name="id" value="{{movie.id}}">
+                <div class="form-group" style="width: 100%; margin-left: 0px;">
+                  <label for="sel1">Selecciona colección:</label>
+                  <select class="form-control" id="listColletions" name="idCollection">
+                    {% for collection in collections %}
+                    <option value="{{collection.id}}">{{collection.nombre}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-default">Añadir</button>
+              </form>
+            </div>
             {% endif %}
           </div>
         </div>

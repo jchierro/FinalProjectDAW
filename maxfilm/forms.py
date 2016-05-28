@@ -1,6 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from models import Coleccion
+
+
+class CollectionForm(ModelForm):
+    class Meta:
+        model = Coleccion
+        fields = ['nombre', 'descripcion', 'media']
+
+    def __init__(self, *args, **kwargs):
+        super(CollectionForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].required = True
+        self.fields['descripcion'].required = True
+        self.fields['media'].required = True
 
 
 class SignUpForm(ModelForm):

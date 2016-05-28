@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.shortcuts import render, render_to_response, redirect
-from forms import SignUpForm
+from forms import SignUpForm, CollectionForm
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 import json
 from urllib2 import Request, urlopen, HTTPError
@@ -10,7 +12,7 @@ from django.http.response import HttpResponseRedirect
 from django.template.context import RequestContext
 from django.contrib import auth
 from django.contrib.auth.hashers import make_password
-from models import AccionPelicula, AccionSerie, AccionPersona
+from models import AccionPelicula, AccionSerie, AccionPersona, Coleccion, ContenidoMultimedia
 
 headers = {
     'Accept': 'application/json',
@@ -76,7 +78,7 @@ def signup(request):
 def dashboard(request):
     """Dashboard of the user"""
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'collections' not in request.GET:
         aux = User.objects.get(username=request.user.username)
         if request.POST['password'] != '':
             aux.password = make_password(request.POST['password'])
@@ -120,6 +122,29 @@ def dashboard(request):
 
         return render(request, 'maxfilm/dashboard.html', {'bookmarks': bookmarks,
                                                           'people': True})
+
+    if 'collections' in request.GET:
+        collectionsMovies = Coleccion.objects.filter(id_usuario=request.user).filter(media='Películas')
+        collectionsTv = Coleccion.objects.filter(id_usuario=request.user).filter(media='Series')
+
+        if request.method == 'POST':
+            form = CollectionForm(request.POST)
+            if form.is_valid():
+                aux = Coleccion()
+                aux.nombre = form.cleaned_data["nombre"]
+                aux.descripcion = form.cleaned_data["descripcion"]
+                aux.media = form.cleaned_data["media"]
+                aux.id_usuario = request.user
+                aux.save()
+
+                return HttpResponseRedirect('/dashboard/?collections')
+        else:
+            form = CollectionForm()
+
+        return render(request, 'maxfilm/dashboard.html', {'collections': True,
+                                                          'form': form,
+                                                          'collectionsTv': collectionsTv,
+                                                          'collectionsMovies': collectionsMovies})
 
     return render(request, 'maxfilm/dashboard.html', {'default': True})
 
@@ -366,6 +391,47 @@ def bookmark(request):
     return redirect('/')
 
 
+def add(request):
+    """Add"""
+
+    if 'movie' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/movie/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        movie = json.loads(urlopen(con).read())
+
+        try:
+            aux = ContenidoMultimedia.objects.filter(id_coleccion=request.GET['idCollection']).get(id_contentAPI=request.GET['id'])
+        except ContenidoMultimedia.DoesNotExist:
+            aux = ContenidoMultimedia()
+            aux.id_contentAPI = movie['id']
+            aux.titulo = movie['title']
+            aux.img_portada = movie['poster_path']
+            aux.id_coleccion = Coleccion.objects.get(id=request.GET['idCollection'])
+            aux.save()
+
+        return redirect('/movie/' + request.GET['id'])
+
+    if 'tv' in request.GET and 'delete' not in request.GET:
+        con = Request('http://api.themoviedb.org/3/tv/' + request.GET['id'] +
+                      '?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                      headers=headers)
+        tv = json.loads(urlopen(con).read())
+
+        try:
+            aux = ContenidoMultimedia.objects.filter(id_coleccion=request.GET['idCollection']).get(id_contentAPI=request.GET['id'])
+        except ContenidoMultimedia.DoesNotExist:
+            aux = ContenidoMultimedia()
+            aux.id_contentAPI = tv['id']
+            aux.titulo = tv['name']
+            aux.img_portada = tv['poster_path']
+            aux.id_coleccion = Coleccion.objects.get(id=request.GET['idCollection'])
+            aux.save()
+
+        return redirect('/tv/' + request.GET['id'])
+
+    return redirect('/')
+
 def index(request):
     """View index"""
 
@@ -427,12 +493,15 @@ def viewMovie(request, id):
         bookmark = False
         viewing = False
 
+    collections = Coleccion.objects.filter(id_usuario=request.user).filter(media='Películas')
+
     return render(request, 'maxfilm/viewMovie.html', {'movie': movie,
                                                       'credits': credits,
                                                       'videos': videos,
                                                       'similar': similar,
                                                       'bookmark': bookmark,
-                                                      'viewing': viewing})
+                                                      'viewing': viewing,
+                                                      'collections': collections})
 
 
 def viewTv(request, id):
@@ -487,13 +556,16 @@ def viewTv(request, id):
         bookmark = False
         viewing = False
 
+    collections = Coleccion.objects.filter(id_usuario=request.user).filter(media='Series')
+
     return render(request, 'maxfilm/viewTv.html', {'tv': tv,
                                                    'credits': credits,
                                                    'similar': similar,
                                                    'videos': videos,
                                                    'seasons': seasons,
                                                    'bookmark': bookmark,
-                                                   'viewing': viewing})
+                                                   'viewing': viewing,
+                                                   'collections': collections})
 
 
 def viewPerson(request, id):

@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^bookmark/$', views.bookmark, name="bookmark"),
     url(r'^pending/$', views.pending, name="pending"),
     url(r'^viewed/$', views.viewed, name="viewed"),
+    url(r'^add/$', views.add, name="add"),
     url(r'^$', views.index, name="index"),
     url(r'^movie/(?P<id>[0-9]+)/$', views.viewMovie, name="viewMovie"),
     url(r'^tv/(?P<id>[0-9]+)/$', views.viewTv, name="viewTv"),
