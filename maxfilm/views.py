@@ -178,6 +178,7 @@ def dashboard(request):
                                                           'collectionsTv': collectionsTv,
                                                           'collectionsMovies': collectionsMovies})
 
+    
     return render(request, 'maxfilm/dashboard.html', {'default': True})
 
 
@@ -463,6 +464,7 @@ def add(request):
         return redirect('/tv/' + request.GET['id'])
 
     return redirect('/')
+
 
 def index(request):
     """View index"""

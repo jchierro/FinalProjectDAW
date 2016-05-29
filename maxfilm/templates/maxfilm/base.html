@@ -49,6 +49,120 @@
     width:100%;
     top:38%;
   }
+
+  /* */
+  .tt-dropdown-menu {
+    text-align: left;
+  }
+
+  .title,
+  .my-field-1 {
+    font-family: Prociono;
+  }
+
+  .title {
+    margin: 20px 0 0 0;
+    font-size: 64px;
+  }
+
+  .example {
+    padding: 30px 0;
+  }
+
+  .course-title {
+    margin: 20px 0;
+    font-size: 32px;
+  }
+
+  .demo {
+    position: relative;
+    *z-index: 1;
+    margin: 50px 0;
+  }
+
+  .typeahead, .tt-query, .tt-hint {
+    width: 396px !important;
+    height: 30px !important;
+    padding: 8px 12px !important;
+    font-size: 24px !important;
+    line-height: 30px !important;
+    border: 2px solid #ccc !important;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px !important;
+    outline: none !important;
+  }
+
+  .typeahead {
+    background-color: #fff;
+  }
+
+  .typeahead:focus {
+    border: 2px solid #0097cf;
+  }
+
+  .tt-query {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+
+  .tt-hint {
+    color: #999
+  }
+
+  .tt-dropdown-menu {
+    width: 422px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  }
+
+  .tt-suggestion {
+    padding: 3px 20px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .tt-suggestion.tt-is-under-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+  }
+
+  .tt-suggestion p {
+    margin: 0;
+  }
+
+  .example-twitter-oss .tt-suggestion {
+    padding: 8px 20px;
+  }
+
+  .example-twitter-oss .tt-suggestion + .tt-suggestion {
+    border-top: 1px solid #ccc;
+  }
+
+  .example-twitter-oss .my-field-2 {
+    float: right;
+    font-style: italic;
+  }
+
+  .example-twitter-oss .my-field-1 {
+    font-weight: bold;
+  }
+
+  .example-twitter-oss .my-field-3 {
+    font-size: 14px;
+  }
+  /* */
   </style>
 </head>
 <body>
@@ -118,17 +232,39 @@
   <script type="text/javascript" src="{% static 'js/mdb.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/slick.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/datatables.min.js' %}"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js"></script>
   <script type="text/javascript">
   $(document).ready(function () {
     $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
       $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js',function(){
         $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.resize.min.js',function(){
-          $.plot("#chart1",[{data:50,color:'#F44336'},{data:50,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
-          $.plot("#chart2",[{data:10,color:'#33B5E5'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
-          $.plot("#chart3",[{data:10,color:'#00C853'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
-          $.plot("#chart4",[{data:10,color:'#FF8800'},{data:30,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart1",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart2",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart3",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart4",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
         });
       });
+    });
+
+    $('#movies').typeahead({
+      displayKey: 'value',
+      header: '<b>Películas sugeridas...</b>',
+      limit: 10,
+      minLength: 1,
+      remote: {
+        url : 'http://api.themoviedb.org/3/search/movie?query=%QUERY&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+        filter: function (parsedResponse) {               
+          retval = [];
+          for (var i = 0;  i < parsedResponse.results.length;  i++) {
+            retval.push({
+              value: parsedResponse.results[i].title,
+              tokens: [parsedResponse.results[i].title]
+            });
+          }
+          return retval;
+        },
+        dataType: 'jsonp'
+      }
     });
 
     $('.autoplay').slick({
