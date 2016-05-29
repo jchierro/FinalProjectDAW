@@ -178,8 +178,27 @@ def dashboard(request):
                                                           'collectionsTv': collectionsTv,
                                                           'collectionsMovies': collectionsMovies})
 
-    
-    return render(request, 'maxfilm/dashboard.html', {'default': True})
+    total = AccionPelicula.objects.count()
+    bookmarkMovie = AccionPelicula.objects.filter(favorita=True).count()
+    pendingMovie = AccionPelicula.objects.filter(pendiente=True).count()
+    viewedMovie = AccionPelicula.objects.filter(vista=True).count()
+    dataMovie = {'bookmarkMovie': bookmarkMovie,
+                 'pendingMovie': pendingMovie,
+                 'viewedMovie': viewedMovie,
+                 'total': total}
+
+    total = AccionSerie.objects.count()
+    bookmarkTv = AccionSerie.objects.filter(favorita=True).count()
+    pendingTv = AccionSerie.objects.filter(pendiente=True).count()
+    viewedTv = AccionSerie.objects.filter(vista=True).count()
+    dataTv = {'bookmarkTv': bookmarkTv,
+              'pendingTv': pendingTv,
+              'viewedTv': viewedTv,
+              'total': total}
+
+    return render(request, 'maxfilm/dashboard.html', {'default': True,
+                                                      'dataMovie': dataMovie,
+                                                      'dataTv': dataTv})
 
 
 def viewed(request):
@@ -640,7 +659,7 @@ def viewPerson(request, id):
 def Search(request):
     """Search"""
     if request.method == "GET":
-        text = str(request.GET["text"]).replace(" ", ",")
+        text = request.GET["text"].replace(" ", ",")
     else:
         text = ","
 

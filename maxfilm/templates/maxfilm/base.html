@@ -235,76 +235,80 @@
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.9.3/typeahead.min.js"></script>
   <script type="text/javascript">
   $(document).ready(function () {
+    {% if default %}
     $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
       $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js',function(){
         $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.resize.min.js',function(){
-          $.plot("#chart1",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+
+          $.plot("#chart1",[{data:({{dataMovie.bookmarkMovie}} * 100) / {{dataMovie.total}},color:'#F44336'},{data:({{dataMovie.pendingMovie}} * 100) / {{dataMovie.total}},color:'#33B5E5'},{data:({{dataMovie.viewedMovie}} * 100) / {{dataMovie.total}},color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+
           $.plot("#chart2",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
           $.plot("#chart3",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'}],{series:{pie:{show: true,innerRadius: 0.6}}});
           $.plot("#chart4",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
         });
       });
     });
+{% endif %}
 
-    $('#movies').typeahead({
-      displayKey: 'value',
-      header: '<b>Películas sugeridas...</b>',
-      limit: 10,
-      minLength: 1,
-      remote: {
-        url : 'http://api.themoviedb.org/3/search/movie?query=%QUERY&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-        filter: function (parsedResponse) {               
-          retval = [];
-          for (var i = 0;  i < parsedResponse.results.length;  i++) {
-            retval.push({
-              value: parsedResponse.results[i].title,
-              tokens: [parsedResponse.results[i].title]
-            });
-          }
-          return retval;
-        },
-        dataType: 'jsonp'
+$('#movies').typeahead({
+  displayKey: 'value',
+  header: '<b>Películas sugeridas...</b>',
+  limit: 10,
+  minLength: 1,
+  remote: {
+    url : 'http://api.themoviedb.org/3/search/movie?query=%QUERY&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+    filter: function (parsedResponse) {               
+      retval = [];
+      for (var i = 0;  i < parsedResponse.results.length;  i++) {
+        retval.push({
+          value: parsedResponse.results[i].title,
+          tokens: [parsedResponse.results[i].title]
+        });
       }
-    });
+      return retval;
+    },
+    dataType: 'jsonp'
+  }
+});
 
-    $('.autoplay').slick({
-      infinite: true,
-      speed: 500,
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      autoplay: true,
-      autoplaySpeed: 2000
-    });
+$('.autoplay').slick({
+  infinite: true,
+  speed: 500,
+  slidesToShow: 5,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000
+});
 
-    $('#tableCrew, #tableCast').DataTable( {
-      "order": [[ 0, "desc" ]]
-    } );
+$('#tableCrew, #tableCast').DataTable( {
+  "order": [[ 0, "desc" ]]
+} );
 
-    {% if action %}
-    $({{action}}).toggleClass('active');
-    $('#status').children().each(function() {
-      if ($(this).attr('id') == {{action}}) {
-        $(this).toggleClass('active');
-      };
-    });
-    {% endif %}
+{% if action %}
+$({{action}}).toggleClass('active');
+$('#status').children().each(function() {
+  if ($(this).attr('id') == {{action}}) {
+    $(this).toggleClass('active');
+  };
+});
+{% endif %}
 
-    {% if genre %}
-    $('#genres').children().each(function() {
-      if ($(this).attr('id') == "genre_" + {{genre}}) {
-        $(this).toggleClass('active');
-      };
-    });
-    {% endif %}
+{% if genre %}
+$('#genres').children().each(function() {
+  if ($(this).attr('id') == "genre_" + {{genre}}) {
+    $(this).toggleClass('active');
+  };
+});
+{% endif %}
 
-    {% if page %}
-    $('#pagination').children().each(function() {
-      if ($(this).attr('id') == {{page}}) {
-        $(this).toggleClass('active');
-      };
-    });
-    {% endif %}
-  });
+{% if page %}
+$('#pagination').children().each(function() {
+  if ($(this).attr('id') == {{page}}) {
+    $(this).toggleClass('active');
+  };
+});
+{% endif %}
+});
 </script>
 </body>
 </html>
