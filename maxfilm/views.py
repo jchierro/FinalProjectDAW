@@ -4,6 +4,7 @@ from django.shortcuts import render, render_to_response, redirect
 from forms import SignUpForm, CollectionForm
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 import json
+import urllib
 from urllib2 import Request, urlopen, HTTPError
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -663,23 +664,14 @@ def Search(request):
     else:
         text = ","
 
-    con = Request('http://api.themoviedb.org/3/search/movie/' +
-                  '?query=' + text +
-                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-                  headers=headers)
-    resultMovie = json.loads(urlopen(con).read())
+    con = u'http://api.themoviedb.org/3/search/movie/' + '?query=' + text + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es'
+    resultMovie = json.loads(urllib.urlopen(con.encode("utf-8")).read())
 
-    con = Request('http://api.themoviedb.org/3/search/tv/' +
-                  '?query=' + text +
-                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-                  headers=headers)
-    resultTv = json.loads(urlopen(con).read())
+    con = u'http://api.themoviedb.org/3/search/tv/' + '?query=' + text + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es'
+    resultTv = json.loads(urllib.urlopen(con.encode("utf-8")).read())
 
-    con = Request('http://api.themoviedb.org/3/search/person/' +
-                  '?query=' + text +
-                  '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
-                  headers=headers)
-    resultPeople = json.loads(urlopen(con).read())
+    con = u'http://api.themoviedb.org/3/search/person/' + '?query=' + text + '&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es'
+    resultPeople = json.loads(urllib.urlopen(con.encode("utf-8")).read())
 
     return render(request, 'maxfilm/search.html', {'resultMovie': resultMovie,
                                                    'resultTv': resultTv,
