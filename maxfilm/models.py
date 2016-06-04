@@ -8,7 +8,7 @@ class AccionPelicula(models.Model):
     """Class AccionPelicula"""
     id_MovieAPI = models.CharField(max_length=20)
     titulo = models.CharField(max_length=60)
-    img_portada = models.CharField(max_length=300)
+    img_portada = models.CharField(max_length=300, null=True)
     pendiente = models.BooleanField()
     vista = models.BooleanField()
     favorita = models.BooleanField()
@@ -28,7 +28,7 @@ class AccionSerie(models.Model):
     """Class AccionSerie"""
     id_SerieAPI = models.CharField(max_length=20)
     titulo = models.CharField(max_length=60)
-    img_portada = models.CharField(max_length=300)
+    img_portada = models.CharField(max_length=300, null=True)
     pendiente = models.BooleanField()
     vista = models.BooleanField()
     favorita = models.BooleanField()
@@ -48,7 +48,7 @@ class AccionPersona(models.Model):
     """Class AccionPersona"""
     id_PersonAPI = models.CharField(max_length=20)
     nombre = models.CharField(max_length=60)
-    img_perfil = models.CharField(max_length=300)
+    img_perfil = models.CharField(max_length=300, null=True)
     favorita = models.BooleanField()
     id_usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
@@ -88,7 +88,7 @@ class ContenidoMultimedia(models.Model):
     "Class ContenidoMultimedia"
     id_contentAPI = models.CharField(max_length=20)
     titulo = models.CharField(max_length=60)
-    img_portada = models.CharField(max_length=300)
+    img_portada = models.CharField(max_length=300, null=True)
     id_coleccion = models.ForeignKey(Coleccion, on_delete=models.CASCADE)
 
     class Meta:
