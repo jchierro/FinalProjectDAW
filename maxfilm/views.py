@@ -179,27 +179,25 @@ def dashboard(request):
                                                           'collectionsTv': collectionsTv,
                                                           'collectionsMovies': collectionsMovies})
 
-    total = AccionPelicula.objects.count()
-    bookmarkMovie = AccionPelicula.objects.filter(favorita=True).count()
-    pendingMovie = AccionPelicula.objects.filter(pendiente=True).count()
-    viewedMovie = AccionPelicula.objects.filter(vista=True).count()
-    dataMovie = {'bookmarkMovie': bookmarkMovie,
-                 'pendingMovie': pendingMovie,
-                 'viewedMovie': viewedMovie,
-                 'total': total}
+    con = Request('http://api.themoviedb.org/3/discover/movie?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    numMovies = json.loads(urlopen(con).read())['total_results']
 
-    total = AccionSerie.objects.count()
-    bookmarkTv = AccionSerie.objects.filter(favorita=True).count()
-    pendingTv = AccionSerie.objects.filter(pendiente=True).count()
-    viewedTv = AccionSerie.objects.filter(vista=True).count()
-    dataTv = {'bookmarkTv': bookmarkTv,
-              'pendingTv': pendingTv,
-              'viewedTv': viewedTv,
-              'total': total}
+    con = Request('http://api.themoviedb.org/3/discover/tv?api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    numTv = json.loads(urlopen(con).read())['total_results']
+
+    con = Request('http://api.themoviedb.org/3/person/popular?&api_key=c1b10ae4b99ead975d0cbaf0d1045bf0&language=es',
+                  headers=headers)
+    numPeople = json.loads(urlopen(con).read())['total_results']
+
+    total = int(numMovies) + int(numTv) + int(numPeople)
 
     return render(request, 'maxfilm/dashboard.html', {'default': True,
-                                                      'dataMovie': dataMovie,
-                                                      'dataTv': dataTv})
+                                                      'numMovies': numMovies,
+                                                      'numTv': numTv,
+                                                      'numPeople': numPeople,
+                                                      'total': total})
 
 
 def viewed(request):

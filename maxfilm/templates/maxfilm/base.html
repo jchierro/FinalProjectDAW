@@ -47,7 +47,7 @@
     font-size:22pt;
     color:#ddd;
     width:100%;
-    top:38%;
+    top:31%;
   }
 
   /* */
@@ -240,11 +240,18 @@
       $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js',function(){
         $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.resize.min.js',function(){
 
-          $.plot("#chart1",[{data:({{dataMovie.bookmarkMovie}} * 100) / {{dataMovie.total}},color:'#F44336'},{data:({{dataMovie.pendingMovie}} * 100) / {{dataMovie.total}},color:'#33B5E5'},{data:({{dataMovie.viewedMovie}} * 100) / {{dataMovie.total}},color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          var movies = ({{numMovies}} * 100) / {{total}};
+          var restMovies = 100 - movies;
 
-          $.plot("#chart2",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
-          $.plot("#chart3",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'}],{series:{pie:{show: true,innerRadius: 0.6}}});
-          $.plot("#chart4",[{data:40,color:'#F44336'},{data:40,color:'#33B5E5'},{data:40,color:'#00C853'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          var tv = ({{numTv}} * 100) / {{total}};
+          var restTv = 100 - tv;
+
+          var people = ({{numPeople}} * 100) / {{total}};
+          var restPeople = 100 - people;
+
+          $.plot("#chart1",[{data: movies,color:'#F44336'},{data: restMovies,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart2",[{data: tv,color:'#33B5E5'},{data: restTv,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
+          $.plot("#chart3",[{data: people,color:'#00C853'},{data: restPeople,color:'#ddd'}],{series:{pie:{show: true,innerRadius: 0.6}}});
         });
       });
     });
